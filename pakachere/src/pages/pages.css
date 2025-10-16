@@ -1,10 +1,10 @@
 In light mode, the others words are shown faded. What can be the problem
-/* Ensure sidebar/hamburger menu text is visible in white mode /
+/* Ensure sidebar/hamburger menu text is visible in white mode */
 .navbar-dropdown-link,
 .navbar-mobile-link {
 color: #222 !important;
 }
-/ --- DARK MODE OVERRIDES FOR TUTOR DASHBOARD PAGE --- /
+/* --- DARK MODE OVERRIDES FOR TUTOR DASHBOARD PAGE --- */
 .dark .tutor-dashboard-page,
 .dark .tutor-dashboard-container,
 .dark .dashboard,
@@ -20,7 +20,7 @@ color: #60a5fa !important;
 background: #2563eb !important;
 color: #fff !important;
 }
-/ --- DARK MODE OVERRIDES FOR TUTOR PROFILE PAGE --- /
+/* --- DARK MODE OVERRIDES FOR TUTOR PROFILE PAGE --- */
 .dark .min-h-screen,
 .dark .bg-gray-50,
 .dark .max-w-4xl,
@@ -63,7 +63,7 @@ color: #fff !important;
 .dark .text-gray-400 {
 color: #b3b3b3 !important;
 }
-/ --- DARK MODE OVERRIDES FOR STUDENT PROFILE PAGE --- /
+/* --- DARK MODE OVERRIDES FOR STUDENT PROFILE PAGE --- */
 .dark .profile-page,
 .dark .profile-form {
 background: #18181b !important;
@@ -82,7 +82,7 @@ color: #60a5fa !important;
 background: #2563eb !important;
 color: #fff !important;
 }
-/ --- DARK MODE OVERRIDES FOR TUTORIALS PAGE --- /
+/* --- DARK MODE OVERRIDES FOR TUTORIALS PAGE --- */
 .dark .upload-page,
 .dark .upload-container {
 background: #18181b !important;
@@ -113,7 +113,7 @@ border-color: #444 !important;
 background: #2563eb !important;
 color: #fff !important;
 }
-/ --- DARK MODE OVERRIDES FOR PAYMENT, MESSAGES, REFERRAL --- */
+/* --- DARK MODE OVERRIDES FOR PAYMENT, MESSAGES, REFERRAL --- */
 .dark .landing-container,
 .dark .payment-methods,
 .dark .session-cards,
@@ -200,7 +200,7 @@ color: #fff !important;
 background: #2563eb !important;
 color: #fff !important;
 }
-/ Plain CSS for Login, Register, StudentDashboard, TutorDashboard */
+/* Plain CSS for Login, Register, StudentDashboard, TutorDashboard */
 .dashboard-container {
 padding: 1rem;
 background: #f9fafb;
@@ -341,9 +341,9 @@ transform: scale(1.02);
 box-shadow: 0 6px 32px rgba(0, 0, 0, 0.12); /* Slightly deeper shadow for emphasis */
 }
 
-/.form-box:hover {
+.form-box:hover {
 transform: scale(1.02);
-}/
+}
 
 .logo {
 width: 90px;
