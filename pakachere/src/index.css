@@ -920,3 +920,265 @@ body.dark .navbar-dropdown {
 .navbar-dropdown-link:hover {
   transform: translateX(3px);
   }
+
+
+/* ==========================================================
+   ✅ UNIVERSAL NAVBAR STYLES (Light + Dark Mode)
+   Clean, responsive, non-faded text for both modes.
+   ========================================================== */
+
+/* RESET + BASE */
+.navbar *,
+.navbar-mobile-menu *,
+.navbar-dropdown *,
+.desktop-menu * {
+  opacity: 1 !important;
+  text-shadow: none !important;
+  -webkit-text-fill-color: unset !important;
+  filter: none !important;
+  box-sizing: border-box;
+}
+
+body, html {
+  margin: 0;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: var(--bg, #f8fafc);
+  color: #0f172a;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+:root {
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --muted: #6b7280;
+}
+
+/* ==========================================================
+   NAVBAR CONTAINER
+   ========================================================== */
+.navbar {
+  width: 100%;
+  top: 0;
+  left: 0;
+  position: fixed;
+  z-index: 100;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1.25rem;
+  transition: background 0.3s ease, color 0.3s ease;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  background: #ffffff;
+  color: #0f172a;
+}
+
+/* ==========================================================
+   LIGHT MODE
+   ========================================================== */
+body:not(.dark) .navbar {
+  background: #ffffff !important;
+  color: #0f172a !important;
+}
+
+body:not(.dark) .navbar-link,
+body:not(.dark) .navbar-mobile-link,
+body:not(.dark) .navbar-dropdown-link {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #0f172a !important;
+}
+
+body:not(.dark) .navbar-link:hover,
+body:not(.dark) .navbar-dropdown-link:hover {
+  background: #e8f2ff !important;
+  color: #2563eb !important;
+}
+
+body:not(.dark) .navbar-mobile-label {
+  background: #2563eb !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+}
+
+/* ==========================================================
+   DARK MODE
+   ========================================================== */
+body.dark .navbar {
+  background: #1e1e24 !important;
+  color: #f3f4f6 !important;
+}
+
+body.dark .navbar-link,
+body.dark .navbar-mobile-link,
+body.dark .navbar-dropdown-link {
+  color: #f3f4f6 !important;
+  font-weight: 600 !important;
+}
+
+body.dark .navbar-link:hover,
+body.dark .navbar-dropdown-link:hover {
+  background: rgba(96,165,250,0.12) !important;
+  color: #60a5fa !important;
+}
+
+body.dark .navbar-mobile-label {
+  background: #60a5fa !important;
+  color: #0b1220 !important;
+  font-weight: 600 !important;
+}
+
+/* ==========================================================
+   DESKTOP MENU
+   ========================================================== */
+.desktop-menu {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.desktop-menu a {
+  text-decoration: none;
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+
+/* ==========================================================
+   MOBILE MENU
+   ========================================================== */
+.navbar-mobile-menu {
+  display: none;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.8rem;
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  border-radius: 12px;
+  padding: 8px 12px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+  background: var(--card, #ffffff);
+  z-index: 1000;
+}
+
+body.dark .navbar-mobile-menu {
+  background: #23272f !important;
+}
+
+/* Mobile Icon */
+.navbar-mobile-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  border-radius: 10px;
+  padding: 8px;
+  background: transparent;
+  transition: background 0.3s, transform 0.3s;
+}
+
+.navbar-mobile-link:hover {
+  transform: scale(1.05);
+}
+
+/* Label shown when icon clicked */
+.navbar-mobile-label {
+  position: absolute;
+  bottom: -32px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.8rem;
+  border-radius: 6px;
+  padding: 3px 8px;
+  white-space: nowrap;
+  display: none;
+}
+
+.navbar-mobile-link.active .navbar-mobile-label {
+  display: block;
+}
+
+/* ==========================================================
+   DROPDOWN MENU
+   ========================================================== */
+.navbar-dropdown {
+  position: absolute;
+  top: 60px;
+  right: 12px;
+  border-radius: 12px;
+  min-width: 180px;
+  padding: 12px;
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  background: var(--card, #ffffff);
+  z-index: 999;
+}
+
+body.dark .navbar-dropdown {
+  background: #23272f !important;
+}
+
+.navbar-dropdown-link {
+  padding: 8px 10px;
+  border-radius: 8px;
+  text-decoration: none;
+  display: block;
+  transition: background 0.2s, color 0.2s;
+}
+
+/* ==========================================================
+   MOBILE RESPONSIVENESS
+   ========================================================== */
+@media (max-width: 700px) {
+  .desktop-menu {
+    display: none !important;
+  }
+
+  .navbar-mobile-menu {
+    display: flex !important;
+  }
+
+  .navbar-dropdown {
+    display: flex !important;
+    top: 48px;
+    right: 10px;
+  }
+}
+
+/* ==========================================================
+   ICONS + HAMBURGER
+   ========================================================== */
+.navbar-hamburger {
+  color: inherit !important;
+  background: transparent !important;
+  border: none !important;
+  font-size: 2rem !important;
+  cursor: pointer;
+}
+
+.navbar-mobile-link svg,
+.navbar-dropdown-link svg {
+  color: inherit !important;
+  fill: currentColor !important;
+  opacity: 1 !important;
+}
+
+/* ==========================================================
+   FINAL FIX – LIGHT MODE TEXT (No Fade)
+   ========================================================== */
+body:not(.dark) .navbar *,
+html:not(.dark) .navbar *,
+body:not(.dark) .navbar-mobile-menu *,
+body:not(.dark) .navbar-dropdown * {
+  color: #0f172a !important;
+  opacity: 1 !important;
+  -webkit-text-fill-color: #0f172a !important;
+  text-shadow: none !important;
+  filter: none !important;
+  font-weight: 600 !important;
+  }
