@@ -397,3 +397,150 @@ input, textarea, button {
   }
   body { color: #e6eef8; }
 }
+
+
+/* ===========================
+   MOBILE NAV: STRONG LIGHT/DARK
+   (Place at VERY END of CSS)
+   =========================== */
+
+/* --- GENERAL / RESET --- */
+.navbar-mobile-link,
+.navbar-dropdown-link,
+.navbar-mobile-label,
+.navbar-mobile-menu,
+.navbar-dropdown {
+  opacity: 1 !important;
+  text-decoration: none !important;
+  text-shadow: none !important;
+  -webkit-text-fill-color: unset !important; /* fixes some webkit quirks */
+}
+
+/* --- LIGHT MODE (explicit) --- */
+body:not(.dark) .navbar-mobile-menu,
+body:not(.dark) .navbar-dropdown {
+  background: var(--card, #ffffff) !important;
+  color: #0f172a !important;             /* strong readable text */
+  border-color: #e6edf3 !important;
+  box-shadow: 0 6px 20px rgba(15,23,42,0.08) !important;
+}
+
+body:not(.dark) .navbar-mobile-link {
+  color: #2563eb !important;             /* icon color / accent */
+  font-weight: 600 !important;
+}
+
+body:not(.dark) .navbar-dropdown-link {
+  color: #0f172a !important;             /* link text inside dropdown */
+  background: transparent !important;
+  padding: 8px 12px !important;
+  border-radius: 6px !important;
+}
+
+body:not(.dark) .navbar-dropdown-link:hover {
+  background: #e8f2ff !important;
+  color: #2563eb !important;
+}
+
+/* mobile label (tooltip above icon) - light mode */
+body:not(.dark) .navbar-mobile-label {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
+
+/* --- DARK MODE (explicit) --- */
+.dark .navbar-mobile-menu,
+html.dark .navbar-mobile-menu,
+body.dark .navbar-mobile-menu,
+.dark .navbar-dropdown,
+html.dark .navbar-dropdown,
+body.dark .navbar-dropdown {
+  background: #23272f !important;
+  color: #f3f4f6 !important;
+  border-color: #2b2f36 !important;
+  box-shadow: 0 8px 30px rgba(2,6,23,0.6) !important;
+}
+
+.dark .navbar-mobile-link,
+html.dark .navbar-mobile-link,
+body.dark .navbar-mobile-link {
+  color: #fff !important;
+  font-weight: 600 !important;
+}
+
+.dark .navbar-dropdown-link,
+html.dark .navbar-dropdown-link,
+body.dark .navbar-dropdown-link {
+  color: #f3f4f6 !important;
+  background: transparent !important;
+}
+
+.dark .navbar-dropdown-link:hover {
+  background: rgba(96,165,250,0.08) !important;
+  color: #60a5fa !important;
+}
+
+/* mobile label - dark mode */
+.dark .navbar-mobile-label,
+html.dark .navbar-mobile-label,
+body.dark .navbar-mobile-label {
+  background: #60a5fa !important;
+  color: #0b1220 !important;
+}
+
+/* --- ENSURE MEDIA QUERIES SHOW/HIDE CORRECTLY --- */
+@media (max-width: 700px) {
+  .desktop-menu { display: none !important; }
+
+  .navbar-mobile-menu {
+    display: flex !important;
+    position: absolute !important;
+    top: 12px !important;
+    right: 16px !important;
+    gap: 0.75rem !important;
+    padding: 8px 10px !important;
+    z-index: 9999 !important;
+    align-items: center !important;
+  }
+
+  .navbar-dropdown {
+    display: flex !important;
+    position: absolute !important;
+    top: 48px !important;
+    right: 8px !important;
+    min-width: 180px !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+    z-index: 9998 !important;
+  }
+}
+
+/* --- FORCE OVERRIDES AGAINST TAILWIND/UTILITY CLASSES --- */
+.navbar-mobile-link,
+.navbar-dropdown-link {
+  color: inherit !important;
+  opacity: 1 !important;
+}
+
+/* Accessibility: focus states */
+.navbar-mobile-link:focus,
+.navbar-dropdown-link:focus {
+  outline: 2px solid rgba(37,99,235,0.3) !important;
+  outline-offset: 2px !important;
+}
+
+/* minor: ensure hamburger inherits color from container */
+.navbar-hamburger {
+  color: inherit !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+/* Final safety: prefers-color-scheme fallback */
+@media (prefers-color-scheme: dark) {
+  :root { --card: #23272f; }
+}
+@media (prefers-color-scheme: light) {
+  :root { --card: #ffffff; }
+}
+
