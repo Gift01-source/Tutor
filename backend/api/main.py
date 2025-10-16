@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_cors import CORS
-from routes.auth import auth_bp
-from routes.student import student_bp
-from routes.tutors import tutors_bp
+from .routes.auth import auth_bp
+from .routes.student import student_bp
+from .routes.tutors import tutors_bp
 
 app = Flask(__name__)
 CORS(app)
