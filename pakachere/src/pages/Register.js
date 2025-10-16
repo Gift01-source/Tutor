@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import logo from '../assets/image.png';
-import API from '../api';
 import './pages.css';
 
 function Register() {
@@ -15,10 +14,10 @@ function Register() {
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
-
+  // handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -27,29 +26,35 @@ function Register() {
     }));
   };
 
+  // handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
     if (!acceptedTerms) {
       setError('You must accept the Terms and Conditions to register.');
       return;
     }
+
     setIsSubmitting(true);
 
-    // Simulate registration without backend
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    users.push({
-      email: formData.email,
-      password: formData.password,
-      name: formData.fullName,
-      role: formData.role
-    });
-    localStorage.setItem('users', JSON.stringify(users));
-    setTimeout(() => {
-      setError('');
+    try {
+      const res = await fetch('https://fuzzy-space-guacamole-q7pr4j6vrrx9c95g-5000.app.github.dev/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || 'Failed to register');
+
       navigate('/login', { state: { registrationSuccess: true } });
+    } catch (err) {
+      setError(err.message);
+    } finally {
       setIsSubmitting(false);
-    }, 1000);
+    }
   };
 
   return (
@@ -81,47 +86,35 @@ function Register() {
             required
           />
 
-          <input
-            type={showPassword ? "text" : "password"}
-            name="password"
-            className="input"
-            placeholder="Password (min 6 characters)"
-            value={formData.password}
-            onChange={handleChange}
-            minLength="6"
-            required
-          />
-          <span
-            className="tongle-eye"
-            onClick={() => setShowPassword((prev) => !prev)}
-            style={{
-              marginLeft: '-30px',
-              zIndex: 1,
-              cursor: 'pointer',
-              fontSize: '18px',
-              color: '#555',
-              userSelect: 'none'
-            }}
-          >
-            {showPassword ? '🙈' : '👁️'}  
-          </span>         
-
-
-         {/*
-          <input
-            type="password"
-            name="password"
-            placeholder="Password (min 6 characters)"
-            className="input"
-            value={formData.password}
-            onChange={handleChange}
-            minLength="6"
-            required
-          />*/}
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <input
+              type={showPassword ? 'text' : 'password'}
+              name="password"
+              className="input"
+              placeholder="Password (min 6 characters)"
+              value={formData.password}
+              onChange={handleChange}
+              minLength="6"
+              required
+              style={{ flex: 1 }}
+            />
+            <span
+              className="toggle-eye"
+              onClick={() => setShowPassword((prev) => !prev)}
+              style={{
+                marginLeft: '-30px',
+                cursor: 'pointer',
+                fontSize: '18px',
+                color: '#555',
+                userSelect: 'none',
+              }}
+            >
+              {showPassword ? '🙈' : '👁️'}
+            </span>
+          </div>
 
           <select
             name="role"
-            placeholder="Select Role"
             className="input"
             value={formData.role}
             onChange={handleChange}
@@ -134,42 +127,42 @@ function Register() {
             <option value="tutor">Tutor</option>
           </select>
 
-          {/*<div style={{margin:'10px', textAlign:'l'}}>
-            <label style={{display:'flex', alignItems:'center', fontSize:'0.98rem'}}>
+          <div style={{ margin: '16px 0', textAlign: 'left' }}>
+            <label
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                fontSize: '1rem',
+                cursor: 'pointer',
+              }}
+            >
               <input
                 type="checkbox"
                 checked={acceptedTerms}
-                onChange={e => setAcceptedTerms(e.target.checked)}
-                style={{marginRight:8}}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                style={{
+                  marginRight: '12px',
+                  width: '18px',
+                  height: '18px',
+                  accentColor: '#007bff',
+                }}
                 required
               />
-              I accept the <a href="/terms" target="_blank" rel="noopener noreferrer" style={{color:'#2563eb', textDecoration:'underline', marginLeft:4}}>Terms and Conditions</a>
+              I accept{' '}
+              <a
+                href="/terms"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  color: '#2563eb',
+                  textDecoration: 'underline',
+                  marginLeft: 4,
+                }}
+              >
+                Terms & Conditions
+              </a>
             </label>
-          </div>*/}
-         <div style={{ margin: '16px 0', textAlign: 'left' }}>
-         <label style={{
-           display: 'flex',
-           alignItems: 'center',
-           fontSize: '1rem',
-           lineHeight: '1.5',
-          cursor: 'pointer'
-      }}>
-    <input
-      type="checkbox"
-      checked={acceptedTerms}
-      onChange={e => setAcceptedTerms(e.target.checked)}
-      style={{
-        marginRight: '12px',
-        width: '18px',
-        height: '18px',
-        accentColor: '#007bff'
-      }}
-      required
-    />
-    I accept <a href="/terms" target="_blank" rel="noopener noreferrer" style={{color:'#2563eb', textDecoration:'underline', marginLeft:4}}>Terms & Conditions</a>
-  </label>
-</div>
-
+          </div>
 
           <button type="submit" disabled={isSubmitting} className="button">
             {isSubmitting ? 'Registering...' : 'Register'}
@@ -178,14 +171,13 @@ function Register() {
 
         <p>
           Already have an account?{' '}
-          <Link to="/Login" className="link">
+          <Link to="/login" className="link">
             Login here
           </Link>
         </p>
-       </div>
+      </div>
     </div>
   );
 }
-
 
 export default Register;

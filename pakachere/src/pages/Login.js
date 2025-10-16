@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import logo from '../assets/image.png';
-import API from '../api';
 import './pages.css';
 
 function Login() {
@@ -13,21 +12,29 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Simulate login using localStorage
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    const user = users.find(u => u.email === email && u.password === password);
-    if (!user) {
-      alert('Login failed: Invalid credentials');
-      return;
-    }
-    localStorage.setItem('token', 'dummy-token');
-    localStorage.setItem('role', user.role);
-    if (user.role === 'tutor') {
-      navigate('/tutor-dashboard');
-    } else if (user.role === 'student') {
-      navigate('/student-dashboard');
-    } else {
-      alert('Unknown role: ' + user.role);
+    try {
+      const res = await fetch(
+        "https://fuzzy-space-guacamole-q7pr4j6vrrx9c95g-5000.app.github.dev/api/auth/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Login failed");
+
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("role", data.user.role);
+
+      if (data.user.role === "tutor") {
+        navigate("/tutor-dashboard");
+      } else {
+        navigate("/student-dashboard");
+      }
+    } catch (err) {
+      alert(err.message);
     }
   };
 
@@ -58,7 +65,6 @@ function Login() {
             onClick={() => setShowPassword((prev) => !prev)}
             style={{
               right: '10px',
-                     
               marginLeft: '-30px',
               zIndex: 1,
               cursor: 'pointer',
@@ -68,7 +74,7 @@ function Login() {
             }}
           >
             {showPassword ? '🙈' : '👁️'}  
-          </span> 
+          </span>
           <button type="submit" className="button">Log In</button>
         </form>
         <p>

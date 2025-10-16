@@ -1,0 +1,16 @@
+[
+  {
+    "id": "0fe4b9ab-62ca-43ad-bc2e-642056b85838",
+    "fullName": "GIFT CHIMWAZA",
+    "email": "testuser@example.com",
+    "password": "$2b$12$FC4x0t8av7brCZWIxJnHiukfMVLOEpLlTZ6djk5yBWCt.eDr6ev2y",
+    "role": "student"
+  },
+  {
+    "id": "41b6d4d1-c1dd-45d9-aaeb-ed706d1ca626",
+    "fullName": "GIFT CHIMWAZA",
+    "email": "bae23-gchimwaza@poly.ac.mw",
+    "password": "$2b$12$0Do6TSO.yRzfg2IkJ7FkOev.S9Wrq5DYEMJ1o0sX4otsv5pdnZlaC",
+    "role": "student"
+  }
+]
