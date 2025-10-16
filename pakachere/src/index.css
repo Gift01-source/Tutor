@@ -544,3 +544,26 @@ body.dark .navbar-mobile-label {
   :root { --card: #ffffff; }
 }
 
+
+/* ===========================
+   FORCE STRONG TEXT FOR LIGHT MODE
+   =========================== */
+body:not(.dark) .navbar-mobile-link,
+body:not(.dark) .navbar-dropdown-link,
+body:not(.dark) .navbar-mobile-label {
+  color: #0f172a !important;       /* strong, readable dark text */
+  font-weight: 600 !important;     /* slightly bolder for clarity */
+  opacity: 1 !important;           /* ensure fully visible */
+  -webkit-text-fill-color: #0f172a !important; /* fix Webkit quirks */
+  text-shadow: none !important;    /* remove faded shadows */
+}
+
+body:not(.dark) .navbar-dropdown-link:hover {
+  background: #e8f2ff !important;
+  color: #2563eb !important;       /* accent color on hover */
+}
+
+body:not(.dark) .navbar-mobile-label {
+  background: #2563eb !important;
+  color: #ffffff !important;
+}
