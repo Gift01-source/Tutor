@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
-from routes.tutors import tutors_bp
-from routes.sessions import sessions_bp
+from .routes.tutors import tutors_bp
+from .routes.sessions import sessions_bp
 
 app = Flask(__name__)
 CORS(app)
