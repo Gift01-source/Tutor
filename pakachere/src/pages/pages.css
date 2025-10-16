@@ -980,3 +980,68 @@
   color: #60a5fa !important;
 }
 
+
+
+
+/* ================================
+   LIGHT MODE DEFAULTS (NO .dark)
+   ================================ */
+body:not(.dark) .navbar,
+body:not(.dark) .navbar-link,
+body:not(.dark) .navbar-dropdown-link,
+body:not(.dark) .navbar-mobile-link {
+  color: #222 !important;           /* Strong readable text */
+  opacity: 1 !important;            /* Remove any faded appearance */
+  text-shadow: none !important;     /* Prevent shadow haze */
+}
+
+body:not(.dark) .navbar-link:hover,
+body:not(.dark) .navbar-dropdown-link:hover,
+body:not(.dark) .navbar-mobile-link:hover {
+  color: #2563eb !important;        /* Accent blue hover */
+  opacity: 1 !important;
+}
+
+/* Ensure dropdown or mobile items have solid background and text */
+body:not(.dark) .navbar-dropdown,
+body:not(.dark) .navbar-mobile {
+  background: #fff !important;
+  color: #222 !important;
+  border-color: #e5e7eb !important;
+}
+
+/* ================================
+   DARK MODE STYLES
+   ================================ */
+.dark .navbar,
+.dark .navbar-link,
+.dark .navbar-dropdown-link,
+.dark .navbar-mobile-link {
+  color: #fff !important;           /* Bright text in dark mode */
+  opacity: 1 !important;
+}
+
+.dark .navbar-link:hover,
+.dark .navbar-dropdown-link:hover,
+.dark .navbar-mobile-link:hover {
+  color: #60a5fa !important;        /* Light blue hover in dark mode */
+  opacity: 1 !important;
+}
+
+.dark .navbar,
+.dark .navbar-dropdown,
+.dark .navbar-mobile {
+  background: #18181b !important;   /* Dark background for navbar areas */
+  border-color: #444 !important;
+}
+
+/* ================================
+   UNIVERSAL RESET FOR NAVBAR TEXT
+   ================================ */
+.navbar-link,
+.navbar-dropdown-link,
+.navbar-mobile-link {
+  transition: color 0.2s ease, opacity 0.2s ease;
+  font-weight: 500;
+  text-decoration: none;
+}
