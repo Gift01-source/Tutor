@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import './pages.css';
 import NotificationBar from '../components/NotificationBar';
 
+const BASE_URL = 'https://fuzzy-space-guacamole-q7pr4j6vrrx9c95g-5000.app.github.dev';
+
 function StudentDashboard() {
   const [notification, setNotification] = useState('Welcome to your dashboard!');
   const [popup, setPopup] = useState(null);
@@ -19,7 +21,7 @@ function StudentDashboard() {
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
-        const res = await fetch(`/api/student/dashboard?student_id=${studentId}`);
+        const res = await fetch(`${BASE_URL}/api/student/dashboard?student_id=${studentId}`);
         if (!res.ok) {
           const text = await res.text();
           throw new Error(text || "Failed to load dashboard");
@@ -57,7 +59,7 @@ function StudentDashboard() {
   const handleAddGoal = async () => {
     if (!goalInput.trim()) return;
     try {
-      const res = await fetch(`/api/student/goal`, {
+      const res = await fetch(`${BASE_URL}/api/student/goal`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ student_id: studentId, text: goalInput })
@@ -76,11 +78,10 @@ function StudentDashboard() {
     }
   };
 
-  // Toggle goal completion
+  // Toggle goal completion locally (optional: sync with backend)
   const handleToggleGoal = idx => {
     const updated = goals.map((g, i) => i === idx ? { ...g, completed: !g.completed } : g);
     setGoals(updated);
-    // Optional: send updated goal status to backend
   };
 
   return (
@@ -162,3 +163,6 @@ const Card = ({ title, children }) => (
 );
 
 export default StudentDashboard;
+
+
+

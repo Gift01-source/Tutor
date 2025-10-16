@@ -4,3 +4,8 @@ flask-limiter==3.7.0
 pydantic==2.8.2
 sqlalchemy==2.0.32
 uuid
+
+Flask==2.3.2
+Flask-Cors==3.0.10
+gunicorn==21.2.0
+
