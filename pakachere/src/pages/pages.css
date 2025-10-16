@@ -174,7 +174,7 @@ background: #2563eb !important;
 color: #fff !important;
 }
 
-/* Referral Program dark mode /
+/* Referral Program dark mode */
 .dark .referral-container,
 .dark .referral-card-container {
 background: #18181b !important;
@@ -301,12 +301,12 @@ box-shadow: 0 2px 12px rgba(0,0,0,0.08);
 }
 
 .page-container {
-min-height: 100vh; /* Full viewport height for better vertical centering /
+min-height: 100vh; 
 display: flex;
 align-items: center;
 justify-content: center;
 background: linear-gradient(135deg, #e3f0ff 0%, #f9fafb 100%);
-padding: 16px; / Adds breathing room on smaller screens */
+padding: 16px; 
 box-sizing: border-box;
 }
 
@@ -832,8 +832,7 @@ transition: background 0.2s;
 background: #b91c1c;
 }
 
-/* BookSession and Profile styles /
-/ Responsive profile form /
+
 .profile-form {
 background: #fff;
 padding: 32px 28px;
@@ -843,7 +842,7 @@ max-width: 480px;
 margin: 0 auto;
 margin-bottom: 32px;
 }
-/ Responsive chat full screen */
+/* Responsive chat full screen */
 @media (max-width: 600px) {
 .whatsapp-chat-fullscreen {
 width: 100vw !important;
@@ -912,7 +911,7 @@ font-weight: 600;
 color: #2563eb;
 }
 
-/tongle eye/
+
 .password-wrapper {
 position: relative;
 display: flex;
