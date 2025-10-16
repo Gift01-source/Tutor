@@ -166,7 +166,7 @@ function Register() {
       }}
       required
     />
-    I accept the<a href="/terms" target="_blank" rel="noopener noreferrer" style={{color:'#2563eb', textDecoration:'underline', marginLeft:4}}>Terms & Conditions</a>
+    I accept <a href="/terms" target="_blank" rel="noopener noreferrer" style={{color:'#2563eb', textDecoration:'underline', marginLeft:4}}>Terms & Conditions</a>
   </label>
 </div>
 
@@ -186,5 +186,6 @@ function Register() {
     </div>
   );
 }
+
 
 export default Register;
