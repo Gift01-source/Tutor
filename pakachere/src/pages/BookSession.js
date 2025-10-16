@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 import ApprovedSessionActions from '../components/ApprovedSessionActions';
 import { format } from 'date-fns';
 
-const BASE_URL = 'https://fuzzy-space-guacamole-q7pr4j6vrrx9c95g-5000.app.github.dev';
+const BASE_URL = 'https://tutorbackend-tr3q.onrender.com';
 
 function BookSession() {
   const [form, setForm] = useState({

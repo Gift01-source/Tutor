@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './pages.css';
 import NotificationBar from '../components/NotificationBar';
 
-const BASE_URL = 'https://fuzzy-space-guacamole-q7pr4j6vrrx9c95g-5000.app.github.dev';
+const BASE_URL = 'https://tutorbackend-tr3q.onrender.com';
 
 function StudentDashboard() {
   const [notification, setNotification] = useState('Welcome to your dashboard!');

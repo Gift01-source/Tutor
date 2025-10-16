@@ -14,7 +14,7 @@ function Login() {
 
     try {
       const res = await fetch(
-        "https://fuzzy-space-guacamole-q7pr4j6vrrx9c95g-5000.app.github.dev/api/auth/login",
+        "https://tutorbackend-tr3q.onrender.com/api/auth/login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
