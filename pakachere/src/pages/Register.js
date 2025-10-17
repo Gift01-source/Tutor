@@ -5,7 +5,7 @@ import './pages.css';
 
 function Register() {
   const [formData, setFormData] = useState({
-    role: 'student',
+    role: '', // empty initially
     fullName: '',
     email: '',
     password: '',
@@ -17,7 +17,6 @@ function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const navigate = useNavigate();
 
-  // handle input change
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -26,7 +25,6 @@ function Register() {
     }));
   };
 
-  // handle form submit
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
@@ -66,6 +64,7 @@ function Register() {
         {error && <div className="error">{error}</div>}
 
         <form onSubmit={handleSubmit}>
+          {/* Full Name */}
           <input
             type="text"
             name="fullName"
@@ -76,6 +75,7 @@ function Register() {
             required
           />
 
+          {/* Email */}
           <input
             type="email"
             name="email"
@@ -86,6 +86,7 @@ function Register() {
             required
           />
 
+          {/* Password */}
           <div style={{ display: 'flex', alignItems: 'center' }}>
             <input
               type={showPassword ? 'text' : 'password'}
@@ -113,20 +114,51 @@ function Register() {
             </span>
           </div>
 
-          <select
-            name="role"
-            className="input"
-            value={formData.role}
-            onChange={handleChange}
-            required
-          >
-            <option value="" disabled>
-              Select Role
-            </option>
-            <option value="student">Student</option>
-            <option value="tutor">Tutor</option>
-          </select>
+          {/* Role select styled like input */}
+          <div style={{ position: 'relative', marginBottom: '16px' }}>
+            <select
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              required
+              style={{
+                width: '100%',
+                padding: '12px 16px',
+                borderRadius: '6px',
+                border: '1px solid #ccc',
+                fontSize: '16px',
+                color: formData.role ? '#000' : '#888', // placeholder color
+                appearance: 'none',
+                outline: 'none',
+                boxSizing: 'border-box',
+              }}
+              onFocus={(e) => (e.target.style.borderColor = '#2563eb')}
+              onBlur={(e) => (e.target.style.borderColor = '#ccc')}
+            >
+              <option value="" disabled hidden>
+                Select your role
+              </option>
+              <option value="student">Student</option>
+              <option value="tutor">Tutor</option>
+            </select>
 
+            {/* Custom arrow */}
+            <span
+              style={{
+                position: 'absolute',
+                right: '12px',
+                top: '50%',
+                transform: 'translateY(-50%)',
+                pointerEvents: 'none',
+                fontSize: '14px',
+                color: '#555',
+              }}
+            >
+              ▼
+            </span>
+          </div>
+
+          {/* Terms & Conditions */}
           <div style={{ margin: '16px 0', textAlign: 'left' }}>
             <label
               style={{
@@ -164,6 +196,7 @@ function Register() {
             </label>
           </div>
 
+          {/* Submit button */}
           <button type="submit" disabled={isSubmitting} className="button">
             {isSubmitting ? 'Registering...' : 'Register'}
           </button>

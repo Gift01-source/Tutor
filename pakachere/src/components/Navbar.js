@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaBook, FaMoneyBillWave, FaBolt, FaHome, FaVideo, FaCalendarAlt, FaSearch } from 'react-icons/fa';
+import { FaBook, FaBolt, FaHome, FaVideo, FaCalendarAlt, FaSearch, FaMoneyCheckAlt } from 'react-icons/fa';
 
 function Navbar({ role }) {
   const navigate = useNavigate();
@@ -29,7 +29,6 @@ function Navbar({ role }) {
     window.location.reload();
   };
 
-  // Links
   let mainLinks = [];
   let extraLinks = [];
 
@@ -37,7 +36,7 @@ function Navbar({ role }) {
     mainLinks = [
       { icon: <FaHome />, label: 'Home', to: '/tutor-dashboard' },
       { icon: <FaVideo />, label: 'Tutorials', to: '/tutor-upload' },
-      { icon: <FaMoneyBillWave />, label: 'Payment', to: '/payment' },
+      { icon: <FaMoneyCheckAlt />, label: 'Payment', to: '/payment' },
       { icon: <FaCalendarAlt />, label: 'My Sessions', to: '/tutor-sessions' },
     ];
     extraLinks = [
@@ -50,8 +49,8 @@ function Navbar({ role }) {
       { icon: <FaHome />, label: 'Home', to: '/student-dashboard' },
       { icon: <FaBook />, label: 'Book', to: '/book-session' },
       { icon: <FaVideo />, label: 'Tutorials', to: '/student-tutorials' },
-      { icon: <FaMoneyBillWave />, label: 'Payment', to: '/payment' },
-      { icon: <FaSearch />, label: 'Search Tutors', to: '/tutor-search' }, // New
+      { icon: <FaMoneyCheckAlt />, label: 'Payment', to: '/payment' },
+      { icon: <FaSearch />, label: 'Search Tutors', to: '/tutor-search' },
     ];
     extraLinks = [
       { label: 'Profile', to: '/student-profile' },
@@ -94,14 +93,16 @@ function Navbar({ role }) {
               onClick={() => handleMobileClick(link.label)}
               style={mobileLinkStyle(darkMode)}
             >
-              {link.icon}
+              {/* Reduced icon size */}
+              {React.cloneElement(link.icon, { size: 22 })}
             </Link>
-            {clickedLink === link.label && <span style={mobileLabelStyle}>{link.label}</span>}
+            {/* Label always shown below icon */}
+            <span style={mobileLabelStyle}>{link.label}</span>
           </div>
         ))}
       </div>
 
-      {/* Sidebar Dropdown (Top Right) */}
+      {/* Sidebar Dropdown */}
       {menuOpen && (
         <div style={mobileDropdownStyle(darkMode)}>
           {extraLinks.map(link => (
@@ -150,9 +151,27 @@ const topBarStyle = (darkMode) => ({
 });
 
 const logoStyle = { display: 'flex', alignItems: 'center', cursor: 'pointer' };
-const logoLinkStyle = (darkMode) => ({ textDecoration: 'none', color: darkMode ? '#f3f4f6' : '#2563eb', display: 'flex', alignItems: 'center' });
-const appNameStyle = { marginLeft: '8px', background: '#2563eb', color: '#fff', padding: '2px 6px', borderRadius: 4, fontSize: '0.85rem' };
-const hamburgerStyle = (darkMode) => ({ fontSize: '1.8rem', background: 'none', border: 'none', cursor: 'pointer', color: darkMode ? '#f3f4f6' : '#2563eb' });
+const logoLinkStyle = (darkMode) => ({
+  textDecoration: 'none',
+  color: darkMode ? '#f3f4f6' : '#2563eb',
+  display: 'flex',
+  alignItems: 'center',
+});
+const appNameStyle = {
+  marginLeft: '8px',
+  background: '#2563eb',
+  color: '#fff',
+  padding: '2px 6px',
+  borderRadius: 4,
+  fontSize: '0.85rem',
+};
+const hamburgerStyle = (darkMode) => ({
+  fontSize: '1.8rem',
+  background: 'none',
+  border: 'none',
+  cursor: 'pointer',
+  color: darkMode ? '#f3f4f6' : '#2563eb',
+});
 
 const mobileBarStyle = (darkMode) => ({
   position: 'fixed',
@@ -169,8 +188,16 @@ const mobileBarStyle = (darkMode) => ({
 });
 
 const mobileIconWrapper = { display: 'flex', flexDirection: 'column', alignItems: 'center', position: 'relative' };
-const mobileLinkStyle = (darkMode) => ({ fontSize: '1.6rem', color: darkMode ? '#f3f4f6' : '#2563eb', textDecoration: 'none' });
-const mobileLabelStyle = { position: 'absolute', bottom: '45px', background: '#2563eb', color: '#fff', padding: '2px 6px', borderRadius: 4, fontSize: '0.75rem' };
+const mobileLinkStyle = (darkMode) => ({
+  color: darkMode ? '#f3f4f6' : '#2563eb',
+  textDecoration: 'none',
+});
+const mobileLabelStyle = {
+  marginTop: '2px',
+  fontSize: '0.75rem',
+  color: '#2563eb',
+  textAlign: 'center',
+};
 const mobileDropdownStyle = (darkMode) => ({
   position: 'absolute',
   top: '60px',
@@ -184,8 +211,19 @@ const mobileDropdownStyle = (darkMode) => ({
   gap: '0.5rem',
   minWidth: '180px',
 });
-const mobileDropdownLinkStyle = (darkMode) => ({ textDecoration: 'none', color: darkMode ? '#fff' : '#222', padding: '6px 10px' });
+const mobileDropdownLinkStyle = (darkMode) => ({
+  textDecoration: 'none',
+  color: darkMode ? '#fff' : '#222',
+  padding: '6px 10px',
+});
 const selectStyle = { padding: '4px 8px', borderRadius: 6 };
-const buttonStyle = { padding: '6px 12px', borderRadius: 6, background: '#2563eb', color: '#fff', border: 'none', cursor: 'pointer' };
+const buttonStyle = {
+  padding: '6px 12px',
+  borderRadius: 6,
+  background: '#2563eb',
+  color: '#fff',
+  border: 'none',
+  cursor: 'pointer',
+};
 
 export default Navbar;
