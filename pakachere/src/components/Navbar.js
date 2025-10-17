@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { FaBook, FaMoneyBillWave, FaBolt, FaHome, FaVideo, FaCalendarAlt } from 'react-icons/fa';
+import { FaBook, FaMoneyBillWave, FaBolt, FaHome, FaVideo, FaCalendarAlt, FaSearch } from 'react-icons/fa';
 
 function Navbar({ role }) {
   const navigate = useNavigate();
@@ -51,6 +51,7 @@ function Navbar({ role }) {
       { icon: <FaBook />, label: 'Book', to: '/book-session' },
       { icon: <FaVideo />, label: 'Tutorials', to: '/student-tutorials' },
       { icon: <FaMoneyBillWave />, label: 'Payment', to: '/payment' },
+      { icon: <FaSearch />, label: 'Search Tutors', to: '/tutor-search' }, // New
     ];
     extraLinks = [
       { label: 'Profile', to: '/student-profile' },
@@ -86,7 +87,7 @@ function Navbar({ role }) {
 
       {/* Bottom Fixed Navbar */}
       <div style={mobileBarStyle(darkMode)}>
-        {mainLinks.slice(0, 4).map(link => (
+        {mainLinks.map(link => (
           <div key={link.label} style={mobileIconWrapper}>
             <Link
               to={link.to}
