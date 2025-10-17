@@ -1,30 +1,38 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import Navbar from '../components/Navbar';
 import SessionActions from '../components/ApprovedSessionActions';
 
 function TutorSessions() {
-  const navigate = useNavigate();
   const [sessions, setSessions] = useState([]);
 
+  const BASE_URL = "https://fuzzy-space-guacamole-q7pr4j6vrrx9c95g-5000.app.github.dev";
+
+  // Fetch sessions from backend
   useEffect(() => {
-    const allBookings = JSON.parse(localStorage.getItem('all_bookings') || '[]');
-    const updated = allBookings.map(b => ({
-      id: b.id,
-      studentName: b.student_name || 'Student',
-      date: b.session_time ? b.session_time.split('T')[0] : '',
-      time: b.session_time ? b.session_time.split('T')[1].slice(0,5) : '',
-      topic: b.topic,
-      status: localStorage.getItem(`status_${b.id}`) || b.status || 'pending',
-      tutorId: b.tutor_id || 1,
-    }));
-    setSessions(updated);
+    axios.get(`${BASE_URL}/sessions`)
+      .then(res => {
+        const updated = res.data.map(b => ({
+          id: b.id,
+          studentName: b.student_name || 'Student',
+          date: b.session_time ? b.session_time.split('T')[0] : '',
+          time: b.session_time ? b.session_time.split('T')[1].slice(0,5) : '',
+          topic: b.topic,
+          status: b.status || 'pending',
+          tutorId: b.tutor_id || 1,
+        }));
+        setSessions(updated);
+      })
+      .catch(err => console.error("Error fetching sessions:", err));
   }, []);
 
+  // Update session status via backend
   const updateSessionStatus = (id, status) => {
-    const updated = sessions.map(s => s.id === id ? { ...s, status } : s);
-    setSessions(updated);
-    localStorage.setItem(`status_${id}`, status);
+    axios.post(`${BASE_URL}/sessions/${id}/status`, { status })
+      .then(res => {
+        setSessions(prev => prev.map(s => s.id === id ? { ...s, status } : s));
+      })
+      .catch(err => console.error("Error updating status:", err));
   };
 
   const handleApprove = (id) => updateSessionStatus(id, 'approved');
@@ -32,7 +40,7 @@ function TutorSessions() {
 
   return (
     <div>
-      {/*<Navbar role="tutor" />*/}
+      {/* <Navbar role="tutor" /> */}
       <div className="min-h-screen bg-gray-100 p-6 max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">My Sessions</h1>
 
@@ -51,7 +59,7 @@ function TutorSessions() {
                   <p><strong>Time:</strong> {session.time}</p>
                   <p><strong>Topic:</strong> {session.topic}</p>
                   <p>
-                    <strong>Status:</strong> 
+                    <strong>Status:</strong>
                     <span className={
                       session.status === 'approved' ? 'text-green-600' :
                       session.status === 'rejected' ? 'text-red-600' : 'text-yellow-600'
@@ -77,7 +85,6 @@ function TutorSessions() {
                     </>
                   )}
 
-                  {/* Show payment / session actions if approved */}
                   {session.status === 'approved' && (
                     <SessionActions session={session} />
                   )}
