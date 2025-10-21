@@ -2,23 +2,21 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import ApprovedSessionActions from '../components/ApprovedSessionActions';
 import { format } from 'date-fns';
+import { FaStar } from 'react-icons/fa';
 
-const BASE_URL = 'https://tutorbackend-tr3q.onrender.com';
+const BASE_URL = 'https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev/api/sessions'; // your backend URL
 
 function BookSession() {
-  const studentName = 'Student'; // Replace with logged-in student info if available
+  const studentName = 'Student'; // Replace with logged-in student info
   const today = format(new Date(), 'yyyy-MM-dd');
 
-  // Tutors and bookings
   const [tutors, setTutors] = useState([]);
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState({ tutors: true, bookings: true });
   const [submitStatus, setSubmitStatus] = useState({ loading: false, success: null, error: null });
-
-  // Booking inputs per tutor
   const [bookingInputs, setBookingInputs] = useState({});
 
-  // Fetch tutors and student bookings
+  // Fetch tutors and booked sessions
   useEffect(() => {
     const fetchTutors = async () => {
       try {
@@ -48,7 +46,6 @@ function BookSession() {
     fetchBookings();
   }, [studentName]);
 
-  // Update input fields for a specific tutor
   const handleInputChange = (tutorId, field, value) => {
     setBookingInputs(prev => ({
       ...prev,
@@ -56,22 +53,18 @@ function BookSession() {
     }));
   };
 
-  // Validate form input for a tutor
   const validateTutorInput = (input) => {
     const errors = {};
-    if (!input.topic || input.topic.trim().length < 5) errors.topic = 'Topic must be at least 5 characters';
+    if (!input.topic || input.topic.trim().length < 2) errors.topic = 'Topic must be at least 2 characters';
     if (!input.date) errors.date = 'Select a date';
     if (!input.time) errors.time = 'Select a time';
-
     if (input.date && input.time) {
       const dt = new Date(`${input.date}T${input.time}`);
       if (dt < new Date()) errors.date = 'Select a future date and time';
     }
-
     return errors;
   };
 
-  // Submit booking for a tutor
   const handleBookingSubmit = async (tutor) => {
     const input = bookingInputs[tutor.id] || {};
     const errors = validateTutorInput(input);
@@ -99,7 +92,10 @@ function BookSession() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to book session');
 
-      setBookings(prev => [...prev, data.session]);
+      const newSession = data.session || data;
+
+      // Update bookings instantly
+      setBookings(prev => [...prev, newSession]);
       setBookingInputs(prev => ({ ...prev, [tutor.id]: { topic: '', date: today, time: '' } }));
       setSubmitStatus({ loading: false, success: 'Session booked successfully!', error: null });
       setTimeout(() => setSubmitStatus(prev => ({ ...prev, success: null })), 3000);
@@ -114,8 +110,12 @@ function BookSession() {
       <div className="min-h-screen bg-blue-50 p-6 max-w-5xl mx-auto">
         <h1 className="text-3xl font-bold mb-6 text-gray-800">Book a Session</h1>
 
-        {submitStatus.success && <div className="mb-4 p-3 bg-green-100 text-green-700 rounded">{submitStatus.success}</div>}
-        {submitStatus.error && <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{submitStatus.error}</div>}
+        {submitStatus.success && (
+          <div className="mb-4 p-3 bg-green-100 text-green-700 rounded">{submitStatus.success}</div>
+        )}
+        {submitStatus.error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{submitStatus.error}</div>
+        )}
 
         {/* Tutors List */}
         {loading.tutors ? (
@@ -125,12 +125,39 @@ function BookSession() {
             const input = bookingInputs[tutor.id] || { topic: '', date: today, time: '' };
             return (
               <div key={tutor.id} className="bg-white p-4 mb-4 rounded shadow-md">
-                <h2 className="text-xl font-semibold">{tutor.name}</h2>
-                <p><strong>Subjects:</strong> {tutor.subjects?.join(', ') || 'N/A'}</p>
-                <p><strong>Experience:</strong> {tutor.experience || 'N/A'}</p>
-                <p><strong>Price:</strong> {tutor.price ? `$${tutor.price}/hr` : 'N/A'}</p>
-                <p><strong>Availability:</strong> {tutor.availability?.join(', ') || 'N/A'}</p>
+                <div className="flex items-center gap-4 mb-2">
+                  <img
+                    src={tutor.profilePhoto || "https://via.placeholder.com/60"}
+                    alt={tutor.name}
+                    className="w-16 h-16 rounded-full object-cover border-2 border-blue-500"
+                  />
+                  <div>
+                    <h2 className="text-xl font-semibold">{tutor.name}</h2>
+                    <div className="flex items-center mt-1">
+                      {[...Array(5)].map((_, i) => (
+                        <FaStar
+                          key={i}
+                          size={14}
+                          color={i < Math.round(tutor.rating || 0) ? "#facc15" : "#d1d5db"}
+                        />
+                      ))}
+                      <span className="ml-2 text-gray-500 text-sm">{tutor.reviewsCount || 0} reviews</span>
+                    </div>
+                  </div>
+                </div>
 
+                <p>
+                  <strong>Subjects:</strong>{' '}
+                  {Array.isArray(tutor.subjects) ? tutor.subjects.join(', ') : tutor.subjects || 'N/A'}
+                </p>
+                <p><strong>Experience:</strong> {tutor.experience || 'N/A'} yrs</p>
+                <p><strong>Price:</strong> K{tutor.price || 'N/A'}/hr</p>
+                <p>
+                  <strong>Availability:</strong>{' '}
+                  {Array.isArray(tutor.availability) ? tutor.availability.join(', ') : tutor.availability || 'N/A'}
+                </p>
+
+                {/* Booking Inputs */}
                 <div className="mt-2 grid grid-cols-1 md:grid-cols-3 gap-2">
                   <input
                     type="text"
@@ -174,7 +201,7 @@ function BookSession() {
         ) : (
           bookings.map(booking => (
             <div key={booking.id} className="booked-session-card bg-white p-4 rounded shadow-md mb-3">
-              <p><strong>Tutor:</strong> {booking.tutor_name || booking.tutorId}</p>
+              <p><strong>Tutor:</strong> {booking.tutor_name}</p>
               <p><strong>Date:</strong> {booking.session_time?.split('T')[0]}</p>
               <p><strong>Time:</strong> {booking.session_time?.split('T')[1]?.slice(0,5)}</p>
               <p><strong>Topic:</strong> {booking.topic}</p>

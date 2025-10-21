@@ -1,202 +1,131 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./pages.css";
 
-const StudentProfile = () => {
+function StudentProfile() {
   const [student, setStudent] = useState({
     name: "",
     email: "",
     institution: "",
     course: "",
     goals: "",
-    notifications: true,
+    avatar: "",
   });
-  const [avatar, setAvatar] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const baseUrl = "https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev/api/students";
+
+  useEffect(() => {
+    const email = localStorage.getItem("email");
+    if (email) {
+      axios
+        .get(`${baseUrl}/profile/${email}`)
+        .then((res) => setStudent(res.data))
+        .catch(() => console.log("No profile found yet"));
+    }
+  }, []);
 
   const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    setStudent((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? checked : value,
-    }));
+    setStudent({ ...student, [e.target.name]: e.target.value });
   };
 
-  const handleAvatarChange = (e) => {
+  const handleAvatarChange = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => setAvatar(reader.result);
-    reader.readAsDataURL(file);
+    setAvatarPreview(URL.createObjectURL(file));
+
+    const formData = new FormData();
+    formData.append("avatar", file);
+
+    try {
+      const res = await axios.post(`${baseUrl}/upload-avatar`, formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setStudent((prev) => ({ ...prev, avatar: res.data.avatarUrl }));
+      setMessage("Avatar uploaded successfully!");
+    } catch {
+      setMessage("Failed to upload image.");
+    }
   };
 
-  const handleSave = () => {
-    alert("Profile saved successfully!");
-    // You can send data to backend here with axios.post('/api/student', student)
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.post(`${baseUrl}/profile`, student);
+      setMessage(res.data.message);
+    } catch {
+      setMessage("Error saving profile.");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="profile-page" style={{ minHeight: "100vh", background: "#f9fafb", display: "flex", justifyContent: "center", alignItems: "flex-start", padding: "2rem 1rem" }}>
-      <div className="profile-form" style={{ width: "100%", maxWidth: 550, background: "#fff", borderRadius: 20, boxShadow: "0 4px 20px rgba(0,0,0,0.08)", padding: "24px 20px" }}>
-        {/* Header */}
-        <h1
-          style={{
-            fontSize: "1.8rem",
-            fontWeight: "700",
-            color: "#2563eb",
-            textAlign: "center",
-            marginBottom: 24,
-          }}
-        >
-          Student Profile
-        </h1>
+    <div className="profile-container">
+      <div className="profile-card">
+        <h2 className="profile-title">🎓 Student Profile</h2>
 
-        {/* Avatar */}
-        <div style={{ textAlign: "center", marginBottom: 28 }}>
+        <div className="avatar-container">
           <img
-            src={
-              avatar ||
-              `https://ui-avatars.com/api/?name=${
-                student.name || "Student"
-              }&background=2563eb&color=fff`
-            }
+            src={avatarPreview || student.avatar || "https://via.placeholder.com/120"}
             alt="avatar"
-            style={{
-              width: 90,
-              height: 90,
-              borderRadius: "50%",
-              objectFit: "cover",
-              boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
-              border: "3px solid #2563eb",
-            }}
+            className="avatar-img"
+          />
+          <input type="file" accept="image/*" onChange={handleAvatarChange} className="file-input" />
+        </div>
+
+        <div className="form-group">
+          <input
+            type="text"
+            name="name"
+            value={student.name}
+            placeholder="Full Name"
+            onChange={handleChange}
+            className="input"
           />
           <input
-            type="file"
-            accept="image/*"
-            onChange={handleAvatarChange}
-            style={{
-              display: "block",
-              margin: "10px auto 0",
-              fontSize: "0.9rem",
-            }}
+            type="email"
+            name="email"
+            value={student.email}
+            placeholder="Email"
+            onChange={handleChange}
+            className="input"
+          />
+          <input
+            type="text"
+            name="institution"
+            value={student.institution}
+            placeholder="Institution"
+            onChange={handleChange}
+            className="input"
+          />
+          <input
+            type="text"
+            name="course"
+            value={student.course}
+            placeholder="Course"
+            onChange={handleChange}
+            className="input"
+          />
+          <textarea
+            name="goals"
+            value={student.goals}
+            placeholder="Your learning goals..."
+            onChange={handleChange}
+            className="textarea"
           />
         </div>
 
-        {/* Form */}
-        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
-          <div>
-            <label style={labelStyle}>Full Name</label>
-            <input
-              type="text"
-              name="name"
-              value={student.name}
-              onChange={handleChange}
-              style={inputStyle}
-              placeholder="Enter your name"
-            />
-          </div>
+        <button className="button" onClick={handleSave} disabled={loading}>
+          {loading ? "Saving..." : "Save Profile"}
+        </button>
 
-          <div>
-            <label style={labelStyle}>Email</label>
-            <input
-              type="email"
-              name="email"
-              value={student.email}
-              onChange={handleChange}
-              style={inputStyle}
-              placeholder="Enter your email"
-            />
-          </div>
-
-          <div>
-            <label style={labelStyle}>Institution</label>
-            <input
-              type="text"
-              name="institution"
-              value={student.institution}
-              onChange={handleChange}
-              style={inputStyle}
-              placeholder="Your university or school"
-            />
-          </div>
-
-          <div>
-            <label style={labelStyle}>Course / Program</label>
-            <input
-              type="text"
-              name="course"
-              value={student.course}
-              onChange={handleChange}
-              style={inputStyle}
-              placeholder="Your course name"
-            />
-          </div>
-
-          <div>
-            <label style={labelStyle}>Learning Goals</label>
-            <textarea
-              name="goals"
-              value={student.goals}
-              onChange={handleChange}
-              rows={3}
-              style={{ ...inputStyle, resize: "none" }}
-              placeholder="Describe your learning goals..."
-            />
-          </div>
-
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <input
-              type="checkbox"
-              name="notifications"
-              checked={student.notifications}
-              onChange={handleChange}
-              style={{ width: 18, height: 18 }}
-            />
-            <label style={{ fontSize: "1rem", color: "#444" }}>
-              Enable Email Notifications
-            </label>
-          </div>
-        </div>
-
-        {/* Save Button */}
-        <div style={{ textAlign: "center", marginTop: 28 }}>
-          <button
-            onClick={handleSave}
-            style={{
-              background: "#2563eb",
-              color: "#fff",
-              fontWeight: "600",
-              padding: "10px 24px",
-              borderRadius: 10,
-              border: "none",
-              cursor: "pointer",
-              transition: "0.3s",
-            }}
-            onMouseOver={(e) => (e.target.style.background = "#1e40af")}
-            onMouseOut={(e) => (e.target.style.background = "#2563eb")}
-          >
-            Save Profile
-          </button>
-        </div>
+        {message && <p className="success-msg">{message}</p>}
       </div>
     </div>
   );
-};
-
-const labelStyle = {
-  display: "block",
-  marginBottom: 6,
-  fontWeight: "600",
-  color: "var(--label-color, #333)",
-  fontSize: "0.95rem",
-};
-
-const inputStyle = {
-  width: "100%",
-  padding: "10px 14px",
-  borderRadius: 10,
-  border: "1px solid #ccc",
-  fontSize: "1rem",
-  outline: "none",
-  background: "var(--input-bg, #f9fafb)",
-  color: "var(--input-color, #222)",
-};
+}
 
 export default StudentProfile;

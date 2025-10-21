@@ -1161,4 +1161,114 @@ body:not(.dark) .navbar-mobile-menu * {
   color: #9ca3af;
 }
 
+/* Facebook-inspired clean layout */
+.tutor-profile-page {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.tutor-profile-page h1, 
+.tutor-profile-page h2, 
+.tutor-profile-page h3, 
+.tutor-profile-page h4 {
+  letter-spacing: -0.2px;
+}
+
+.tutor-profile-page input[type="file"]::-webkit-file-upload-button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.tutor-profile-page input[type="file"]::-webkit-file-upload-button:hover {
+  background: #1d4ed8;
+}
+
+
+.profile-container {
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+.profile-card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 25px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+.profile-title {
+  margin-bottom: 20px;
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.avatar-container {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.avatar-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #3b82f6;
+}
+
+.file-input {
+  margin-top: 10px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input, .textarea {
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+}
+
+.textarea {
+  height: 80px;
+  resize: none;
+}
+
+.button {
+  margin-top: 15px;
+  padding: 10px 20px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.button:hover {
+  background: #2563eb;
+}
+
+.success-msg {
+  margin-top: 15px;
+  color: green;
+  font-weight: 500;
+}
+
+@media (max-width: 600px) {
+  .profile-card {
+    max-width: 90%;
+    padding: 15px;
+  }
+}
 

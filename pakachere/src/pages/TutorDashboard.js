@@ -44,7 +44,7 @@ function TutorDashboard() {
             </div>
 
             {/* Registered Students - with filtered list */}
-            <div className="card">
+            {/*<div className="card">
               <h2>Registered Students</h2>
               {loading ? (
                 <p>Loading students...</p>
@@ -58,10 +58,10 @@ function TutorDashboard() {
               ) : (
                 <p>No students found matching your search.</p>
               )}
-            </div>
+            </div>*/}
 
             {/* My Profile */}
-            <div className="card">
+            {/*<div className="card">
               <h2>My Profile</h2>
               <p>View and edit your profile information.</p>
               <button
@@ -73,7 +73,7 @@ function TutorDashboard() {
                   window.location.href = `/tutor-profile/${tutorId}`;
                 }}
               >Go to Profile</button>
-            </div>
+            </div>*/}
 
             {/* Session History - new card */}
             <div className="card">
@@ -88,7 +88,7 @@ function TutorDashboard() {
               </div>
             </div>
           </div>
-          <div style={{marginTop:32, textAlign:'center'}}>
+          {/*<div style={{marginTop:32, textAlign:'center'}}>
             <button
               className="button"
               style={{padding:'12px 24px', fontSize:'1rem'}}
@@ -96,7 +96,7 @@ function TutorDashboard() {
             >
               View All Sessions
             </button>
-          </div>
+          </div>*/}
         </div>
       </div>
     </div>

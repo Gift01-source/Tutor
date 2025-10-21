@@ -1,0 +1,176 @@
+[
+    {
+        "id": 1,
+        "name": "John Banda",
+        "subjects": [
+            "Math",
+            "Physics"
+        ],
+        "experience": 4,
+        "price": 5000,
+        "rating": 4.8,
+        "reviewsCount": 12,
+        "availability": [
+            "Mon",
+            "Wed",
+            "Fri"
+        ],
+        "profilePhoto": "https://via.placeholder.com/100"
+    },
+    {
+        "id": 2,
+        "name": "Mary Phiri",
+        "subjects": [
+            "Biology",
+            "Chemistry"
+        ],
+        "experience": 3,
+        "price": 4500,
+        "rating": 4.5,
+        "reviewsCount": 8,
+        "availability": [
+            "Tue",
+            "Thu"
+        ],
+        "profilePhoto": "https://via.placeholder.com/100"
+    },
+    {
+        "id": "0ce6a52c-bafe-489a-a80c-de1ae905f38f",
+        "userId": "c66c85d7-0658-4510-82e4-639855b79ea3",
+        "subjects": [
+            "chemissstry"
+        ],
+        "experience": "4",
+        "price": "5000",
+        "bio": "",
+        "availability": [
+            "Mon-Morning",
+            "Tue-Morning",
+            "Wed-Morning",
+            "Sun-Afternoon"
+        ]
+    },
+    {
+        "id": "848925e8-e1c9-4218-b118-c9941c29e9cd",
+        "userId": "4fc1ed8d-d5b0-4c58-a369-8dec5d1927a6",
+        "subjects": [
+            "maaathhs"
+        ],
+        "experience": "3",
+        "price": "5000",
+        "bio": "",
+        "availability": [
+            "Mon-Morning",
+            "Wed-Morning",
+            "Tue-Morning",
+            "Thu-Morning",
+            "Fri-Morning"
+        ]
+    },
+    {
+        "id": "43a5a521-f6d7-4e6e-94f5-cc074ed943a3",
+        "userId": "651788b3-d76a-4a73-8ba6-06269f781198",
+        "subjects": [
+            "maaathhs"
+        ],
+        "experience": "3",
+        "price": "5000",
+        "bio": "",
+        "availability": [
+            "Mon-Morning",
+            "Mon-Afternoon",
+            "Mon-Evening"
+        ]
+    },
+    {
+        "id": "daa7bd0f-02fb-4d38-8b2d-79db6847267f",
+        "userId": "7495c7f3-fcdf-4ee7-bd02-1460fc83c02f",
+        "subjects": [
+            "maaathhs"
+        ],
+        "experience": "3",
+        "price": "5000",
+        "bio": "",
+        "availability": [
+            "Sun-Morning",
+            "Sat-Morning"
+        ]
+    },
+    {
+        "id": "70f58a9e-7c3b-43f4-a487-be37c5d831f7",
+        "userId": "db4b6c97-c3a3-4a82-ba96-9ff64b9066a3",
+        "subjects": [
+            "geography",
+            "physics"
+        ],
+        "experience": "4",
+        "price": "500",
+        "bio": "",
+        "availability": [
+            "Mon-Morning",
+            "Tue-Morning",
+            "Wed-Morning"
+        ]
+    },
+    {
+        "id": "c7e77a42-5c6a-4b32-875e-5d5453cc96dd",
+        "userId": "7bf966e4-270b-4e28-ba4a-006e9ce9b484",
+        "subjects": [
+            "maaathhs"
+        ],
+        "experience": "7",
+        "price": "8888",
+        "bio": "",
+        "availability": [
+            "Mon-Morning",
+            "Mon-Afternoon",
+            "Mon-Evening"
+        ]
+    },
+    {
+        "id": "f8c59cfb-8c0b-46d3-bfc2-2fc8379e8563",
+        "userId": "589271ba-005c-4055-8311-ede87801968f",
+        "subjects": [
+            "geography",
+            "physics"
+        ],
+        "experience": "2",
+        "price": "10000",
+        "bio": "",
+        "availability": [
+            "Sun-Morning",
+            "Sun-Afternoon",
+            "Fri-Afternoon"
+        ]
+    },
+    {
+        "id": "c60e0d51-ea5c-42fc-af0b-fcd078dd535e",
+        "userId": "432730d4-89b1-4b68-a333-8ee26a384af1",
+        "subjects": [
+            "geography",
+            "physics"
+        ],
+        "experience": "2",
+        "price": "10000",
+        "bio": "",
+        "availability": [
+            "Mon-Morning",
+            "Tue-Morning",
+            "Wed-Morning"
+        ]
+    },
+    {
+        "id": "4784507c-fb75-4e2c-8fb1-6257e661b757",
+        "userId": "661bcfe6-42b8-4866-9bad-678e40343f69",
+        "subjects": [
+            "chichewa"
+        ],
+        "experience": "2",
+        "price": "2000",
+        "bio": "",
+        "availability": [
+            "Thu-Morning",
+            "Thu-Afternoon"
+        ]
+    }
+]

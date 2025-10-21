@@ -14,7 +14,7 @@ function Login() {
 
     try {
       const res = await fetch(
-        "https://tutorbackend-tr3q.onrender.com/api/auth/login",
+        "https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev/api/auth/login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -27,11 +27,20 @@ function Login() {
 
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.user.role);
+       localStorage.setItem("userId", data.user.id);
+      localStorage.setItem("role", data.user.role);
+      localStorage.setItem("fullName", data.user.fullName);
+      localStorage.setItem("email", data.user.email);  // add this line
+
+      localStorage.setItem("tutorDetails", JSON.stringify(data.user.tutorDetails || null));
+      
 
       if (data.user.role === "tutor") {
         navigate("/tutor-dashboard");
+        alert("Login successful!");
       } else {
         navigate("/student-dashboard");
+        alert("Login successful!");
       }
     } catch (err) {
       alert(err.message);

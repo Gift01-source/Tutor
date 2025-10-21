@@ -20,7 +20,13 @@ import Payment from './pages/Payment';
 import Messages from './pages/Messages';
 import Home from './pages/Home';
 import TutorSearch from './pages/TutorSearch';
-import TutorDetails from './pages/TutorDetails';
+import TutorDetailsView from './pages/TutorDetailsView';
+import TutorDetails from './pages/TutorAdditionalDetails';
+import Book from './pages/Booking'
+//import TutorUpload from './pages/tutorials/TutorUpload';
+import LiveSession from './pages/video';
+import LiveSessionsPage from './pages/LiveSessionsPage';
+import NewPassword from './pages/NewPassword';
 
 function BackArrow() {
   return (
@@ -52,8 +58,11 @@ function App() {
         <Route path="/" element={<Home />} />
 
         <Route path="/register" element={<Register />} />
+        <Route path="/tutordetails" element={<TutorDetails />} />
         <Route path="/login" element={<Login />} />
+        
         <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/new-password/:token" element={<NewPassword />} />
 
         <Route path="/student-dashboard" element={<><Navbar role="student" /><StudentDashboard /></>} />
         <Route path="/tutor-dashboard" element={<><Navbar role="tutor" /><TutorDashboard /></>} />
@@ -63,17 +72,24 @@ function App() {
 
         <Route path="/payment" element={<><BackArrow /><Payment /></>} />
         <Route path="/messages" element={<><BackArrow /><Messages /></>} />
-        <Route path="/book-session" element={<BookSession />} />
+        <Route path="/book-session/:id" element={<BookSession />} />
+        <Route path="/book" element={<><BackArrow /><Book/></>}/>
+       {/* <Route path="/book-session" element={<Booking />} />*/}
         <Route path="/tutor-sessions" element={<><BackArrow /><TutorSessions /></>} />
 
         <Route path="/tutor-search" element={<><BackArrow /><TutorSearch /></>} />
         <Route path="/help" element={<><BackArrow /><HelpCenter /></>} />
         <Route path="/terms" element={<TermsAndConditions />} />
 
-        <Route path="/student-tutorials" element={<StudentTutorials />} />
-        <Route path="/tutor-upload" element={<><BackArrow /><TutorUpload /></>} />
+        <Route path="/view-tutor-details/:tutorId" element={<><BackArrow /><TutorDetailsView /></>}/>
+
+        <Route path="/student-tutorials" element={<><BackArrow /><StudentTutorials /></>} />
+        <Route path="/tutor/:tutorId/upload" element={<><BackArrow /><TutorUpload /></>} />
+        {/*<Route path="/tutor/upload" element={<><BackArrow /><TutorUpload /></>} />*/}
         <Route path="/referral" element={<><BackArrow /><ReferralProgram /></>} />
         <Route path="/tutor/:id" element={<><BackArrow /><TutorDetails /></>} />
+        <Route path="/video" element={<LiveSession />} />
+        <Route path="/live-sessions" element={<><BackArrow /><LiveSessionsPage /></>} />
 
       </Routes>
     </BrowserRouter>

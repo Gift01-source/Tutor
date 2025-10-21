@@ -1,62 +1,86 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import Navbar from '../components/Navbar';
-import SessionActions from '../components/ApprovedSessionActions';
+// src/pages/TutorSessions.js
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import Navbar from "../components/Navbar";
+import SessionActions from "../components/ApprovedSessionActions";
 
-function TutorSessions() {
+const BASE_URL = "https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev";
+
+export default function TutorSessions() {
   const [sessions, setSessions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const BASE_URL = "https://fuzzy-space-guacamole-q7pr4j6vrrx9c95g-5000.app.github.dev";
+  // ✅ Get tutor ID and role from localStorage
+  let tutorUserId = localStorage.getItem("userId");
+  const role = localStorage.getItem("role");
 
-  // Fetch sessions from backend
+  // Ensure tutorUserId is a string (backend expects string)
+  if (tutorUserId) tutorUserId = tutorUserId.toString();
+
   useEffect(() => {
-    axios.get(`${BASE_URL}/sessions`)
-      .then(res => {
-        const updated = res.data.map(b => ({
-          id: b.id,
-          studentName: b.student_name || 'Student',
-          date: b.session_time ? b.session_time.split('T')[0] : '',
-          time: b.session_time ? b.session_time.split('T')[1].slice(0,5) : '',
-          topic: b.topic,
-          status: b.status || 'pending',
-          tutorId: b.tutor_id || 1,
-        }));
-        setSessions(updated);
-      })
-      .catch(err => console.error("Error fetching sessions:", err));
-  }, []);
+    if (!tutorUserId || role !== "tutor") return;
 
-  // Update session status via backend
-  const updateSessionStatus = (id, status) => {
-    axios.post(`${BASE_URL}/sessions/${id}/status`, { status })
-      .then(res => {
-        setSessions(prev => prev.map(s => s.id === id ? { ...s, status } : s));
-      })
-      .catch(err => console.error("Error updating status:", err));
+    const fetchSessions = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/api/sessions`, {
+          params: { tutorId: tutorUserId },
+        });
+        // backend returns { sessions: [...] }
+        setSessions(res.data.sessions || []);
+      } catch (err) {
+        console.error("Error fetching sessions:", err);
+        setSessions([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSessions();
+
+    // Optional: poll for updates every 10s
+    const interval = setInterval(fetchSessions, 10000);
+    return () => clearInterval(interval);
+  }, [tutorUserId, role]);
+
+  const updateSessionStatus = async (id, status) => {
+    try {
+      await axios.post(`${BASE_URL}/api/sessions/${id}/status`, { status });
+      setSessions((prev) =>
+        prev.map((s) => (s.id === id ? { ...s, status } : s))
+      );
+    } catch (err) {
+      console.error("Error updating status:", err);
+    }
   };
 
-  const handleApprove = (id) => updateSessionStatus(id, 'approved');
-  const handleReject = (id) => updateSessionStatus(id, 'rejected');
+  if (!tutorUserId || role !== "tutor") {
+    return (
+      <p className="text-center mt-16 text-red-600">
+        You must be logged in as a tutor to view sessions.
+      </p>
+    );
+  }
 
   return (
     <div>
-      {/* <Navbar role="tutor" /> */}
+      <Navbar role="tutor" />
       <div className="min-h-screen bg-gray-100 p-6 max-w-4xl mx-auto">
         <h1 className="text-3xl font-bold mb-6">My Sessions</h1>
-
-        {sessions.length === 0 ? (
+        {loading ? (
+          <p>Loading sessions...</p>
+        ) : sessions.length === 0 ? (
           <p>No sessions booked yet.</p>
         ) : (
           <ul className="space-y-4">
-            {sessions.map(session => (
+            {sessions.map((session) => (
               <li
                 key={session.id}
                 className="bg-white p-4 rounded shadow-md flex flex-col md:flex-row md:justify-between md:items-center gap-3"
               >
                 <div>
-                  <p><strong>Student:</strong> {session.studentName}</p>
-                  <p><strong>Date:</strong> {session.date}</p>
-                  <p><strong>Time:</strong> {session.time}</p>
+                  <p><strong>Student:</strong> {session.student_name}</p>
+                  <p><strong>Date:</strong> {session.session_time?.split('T')[0]}</p>
+                  <p><strong>Time:</strong> {session.session_time?.split('T')[1]?.slice(0, 5)}</p>
                   <p><strong>Topic:</strong> {session.topic}</p>
                   <p>
                     <strong>Status:</strong>
@@ -68,26 +92,23 @@ function TutorSessions() {
                 </div>
 
                 <div className="flex flex-col md:flex-row md:items-center gap-2">
-                  {session.status === 'pending' && (
+                  {session.status === "pending" && (
                     <>
                       <button
-                        onClick={() => handleApprove(session.id)}
+                        onClick={() => updateSessionStatus(session.id, "approved")}
                         className="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition"
                       >
                         Approve
                       </button>
                       <button
-                        onClick={() => handleReject(session.id)}
+                        onClick={() => updateSessionStatus(session.id, "rejected")}
                         className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition"
                       >
                         Reject
                       </button>
                     </>
                   )}
-
-                  {session.status === 'approved' && (
-                    <SessionActions session={session} />
-                  )}
+                  {session.status === "approved" && <SessionActions session={session} />}
                 </div>
               </li>
             ))}
@@ -97,5 +118,3 @@ function TutorSessions() {
     </div>
   );
 }
-
-export default TutorSessions;

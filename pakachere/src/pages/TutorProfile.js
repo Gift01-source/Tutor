@@ -1,326 +1,332 @@
-import React, { useState, useRef } from "react";
-import { useParams } from "react-router-dom";
-import { FaStar } from "react-icons/fa";
+import React, { useState, useEffect } from "react";
+import { useParams, Link } from "react-router-dom";
+import { FaEdit, FaSave, FaUpload, FaRegFileAlt } from "react-icons/fa";
+import axios from "axios";
+import "./pages.css";
 
-function TutorProfile() {
+const BACKEND_URL =
+  "https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev/api/tutors";
+
+export default function TutorProfile() {
   const { tutorId } = useParams();
-  const [reviews, setReviews] = useState(
-    () => JSON.parse(localStorage.getItem(`reviews_${tutorId}`) || "[]")
-  );
-  const [rating, setRating] = useState(0);
-  const [reviewText, setReviewText] = useState("");
+  const [form, setForm] = useState({
+    fullName: "",
+    email: "",
+    subjects: "",
+    hourlyRate: "",
+    preferredMode: "Online",
+    experience: "",
+    bio: "",
+  });
+  const [loading, setLoading] = useState(true);
 
-  const handleAddReview = () => {
-    if (rating < 1 || !reviewText.trim()) return;
-    const updated = [
-      ...reviews,
-      { rating, text: reviewText, date: new Date().toLocaleDateString() },
-    ];
-    setReviews(updated);
-    localStorage.setItem(`reviews_${tutorId}`, JSON.stringify(updated));
-    setRating(0);
-    setReviewText("");
-  };
-
-  const avgRating =
-    reviews.length > 0
-      ? (reviews.reduce((a, r) => a + r.rating, 0) / reviews.length).toFixed(1)
-      : null;
+  useEffect(() => {
+    setLoading(true);
+    axios
+      .get(`${BACKEND_URL}/profile/${tutorId}`)
+      .then((res) =>
+        setForm({
+          fullName: res.data.name || "",
+          email: res.data.email || "",
+          subjects: res.data.subjects?.join(", ") || "",
+          hourlyRate: res.data.price || "",
+          preferredMode: res.data.preferredMode || "Online",
+          experience: res.data.experience || "",
+          bio: res.data.bio || "",
+        })
+      )
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, [tutorId]);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
-      <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-lg p-4 sm:p-6">
-        <h1 className="text-2xl sm:text-3xl font-bold text-blue-700 text-center mb-6">
-          Tutor Profile
-        </h1>
+    <div className="min-h-screen bg-gray-50">
+      {/* Top Banner */}
+      <header className="relative bg-gradient-to-b from-blue-700 to-blue-800 h-44 sm:h-56 rounded-b-3xl shadow-md">
+        <div className="absolute top-4 left-4">
+    
+        </div>
+      </header>
 
-        <TutorAvatar tutorId={tutorId} />
-
-        <TutorInfoForm tutorId={tutorId} />
-
-        {/* Reviews Section */}
-        <div className="mt-6 bg-yellow-50 p-4 rounded-xl border border-yellow-300">
-          <h3 className="text-lg sm:text-xl font-bold text-yellow-600 mb-2">
-            Ratings & Reviews
-          </h3>
-
-          <div className="flex flex-wrap items-center gap-2 mb-3">
-            <span className="text-yellow-500 font-bold text-lg sm:text-xl">
-              {avgRating ? `${avgRating}/5` : "No ratings yet"}
-            </span>
-            <span className="text-gray-500 text-sm">
-              {reviews.length} review{reviews.length !== 1 ? "s" : ""}
-            </span>
-          </div>
-
-          <div className="flex flex-col sm:flex-row items-center gap-2 mb-3">
-            <div className="flex items-center gap-1">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <FaStar
-                  key={star}
-                  onClick={() => setRating(star)}
-                  className={`cursor-pointer text-xl sm:text-2xl ${
-                    star <= rating ? "text-yellow-400" : "text-gray-300"
-                  } transition-colors duration-200`}
+      {/* Card */}
+      <main className="max-w-4xl mx-auto -mt-20 mb-12 px-4">
+        <section className="bg-white rounded-3xl shadow-xl border border-gray-200 overflow-hidden">
+          <div className="p-6 sm:p-10 space-y-8">
+            {loading ? (
+              <div className="animate-pulse space-y-4">
+                <div className="h-36 w-36 rounded-full bg-gray-200 mx-auto" />
+                <div className="h-6 bg-gray-200 rounded w-48 mx-auto" />
+                <div className="h-4 bg-gray-200 rounded w-64 mx-auto" />
+              </div>
+            ) : (
+              <>
+                <TutorHeader
+                  fullName={form.fullName}
+                  tutorId={tutorId}
                 />
-              ))}
-            </div>
-
-            <input
-              type="text"
-              value={reviewText}
-              onChange={(e) => setReviewText(e.target.value)}
-              placeholder="Write your review..."
-              className="flex-1 border border-gray-300 rounded-lg px-3 py-2 w-full sm:w-auto focus:ring-2 focus:ring-blue-400"
-            />
-
-            <button
-              onClick={handleAddReview}
-              className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-all"
-            >
-              Submit
-            </button>
-          </div>
-
-          {reviews.length === 0 ? (
-            <p className="text-gray-500 font-medium">
-              No reviews yet. Be the first to review this tutor!
-            </p>
-          ) : (
-            <div className="space-y-2">
-              {reviews.map((r, idx) => (
-                <div
-                  key={idx}
-                  className="bg-gray-100 p-2 sm:p-3 rounded-lg border border-gray-200"
-                >
-                  <div className="flex items-center justify-between">
-                    <span className="text-yellow-500 font-bold">
-                      ★ {r.rating}
-                    </span>
-                    <span className="text-sm text-gray-500">{r.date}</span>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                  <div className="lg:col-span-1">
+                    <AvatarAndCerts tutorId={tutorId} fullName={form.fullName} />
                   </div>
-                  <p className="text-gray-700 mt-1">{r.text}</p>
+                  <div className="lg:col-span-2">
+                    <TutorInfoForm tutorId={tutorId} form={form} setForm={setForm} />
+                  </div>
                 </div>
-              ))}
+              </>
+            )}
+          </div>
+        </section>
+      </main>
+    </div>
+  );
+}
+
+/* ============================
+   Header (name + subtitle)
+   ============================ */
+function TutorHeader({ fullName }) {
+  return (
+    <div className="text-center">
+      <h1 className="text-2xl sm:text-3xl font-extrabold text-gray-800">
+        {fullName || "Unnamed Tutor"}
+      </h1>
+      <p className="text-sm text-gray-500 mt-1">Professional Educator</p>
+    </div>
+  );
+}
+
+/* ============================
+   Avatar + Certificates Column
+   - Upload icons visible on small screens
+   - Symbol-only upload controls
+   ============================ */
+function AvatarAndCerts({ tutorId, fullName }) {
+  const [avatar, setAvatar] = useState(null);
+  const [certificates, setCertificates] = useState([]);
+  const [loadingCerts, setLoadingCerts] = useState(true);
+
+  useEffect(() => {
+    setLoadingCerts(true);
+    axios
+      .get(`${BACKEND_URL}/profile/${tutorId}`)
+      .then((res) => {
+        setAvatar(res.data.profilePhoto || null);
+        setCertificates(res.data.certificates || []);
+      })
+      .catch(console.error)
+      .finally(() => setLoadingCerts(false));
+  }, [tutorId]);
+
+  const uploadAvatar = (file) => {
+    const formData = new FormData();
+    formData.append("avatar", file);
+    axios
+      .post(`${BACKEND_URL}/upload-avatar/${tutorId}`, formData)
+      .then((res) => setAvatar(res.data.avatarUrl))
+      .catch(console.error);
+  };
+
+  const uploadCerts = (files) => {
+    const formData = new FormData();
+    files.forEach((f) => formData.append("certificates", f));
+    axios
+      .post(`${BACKEND_URL}/upload-certs/${tutorId}`, formData)
+      .then((res) => setCertificates(res.data.certificates))
+      .catch(console.error);
+  };
+
+  const handleAvatarChange = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    uploadAvatar(file);
+  };
+
+  const handleCertChange = (e) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+    uploadCerts(files);
+  };
+
+  return (
+    <aside className="flex flex-col items-center text-center">
+      <div className="relative">
+        <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full border-4 border-white shadow-md overflow-hidden bg-gray-100">
+          {avatar ? (
+            <img src={avatar} alt={`${fullName || "Tutor"} avatar`} className="w-full h-full object-cover" />
+          ) : (
+            <div className="flex items-center justify-center w-full h-full text-gray-400">
+              <span className="text-xl font-semibold">{(fullName || "T").charAt(0)}</span>
             </div>
           )}
         </div>
+
+        {/* Avatar upload: symbol-only, always visible on small screens */}
+        <label
+          className="absolute -bottom-2 -right-2 bg-white border rounded-full p-2 shadow-sm cursor-pointer hover:bg-gray-50 focus:outline-none"
+          title="Upload profile photo"
+        >
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleAvatarChange}
+            aria-label="Upload profile photo"
+          />
+          <FaUpload className="text-blue-600" />
+        </label>
       </div>
-    </div>
+
+      <div className="mt-4 w-full">
+        <div className="flex items-center justify-between px-2">
+          <h4 className="text-sm font-medium text-gray-700">Certificates</h4>
+
+          {/* Certificate upload: symbol-only button visible on all sizes */}
+          <label
+            className="bg-white border rounded-full p-2 shadow-sm cursor-pointer hover:bg-gray-50 flex items-center"
+            title="Upload certificates"
+          >
+            <input
+              type="file"
+              accept=".pdf,.jpg,.jpeg,.png"
+              multiple
+              className="hidden"
+              onChange={handleCertChange}
+              aria-label="Upload certificates"
+            />
+            <FaUpload className="text-blue-600" />
+          </label>
+        </div>
+
+        <div className="mt-3">
+          {loadingCerts ? (
+            <div className="space-y-2 animate-pulse">
+              <div className="h-3 bg-gray-200 rounded w-3/4" />
+              <div className="h-3 bg-gray-200 rounded w-1/2" />
+            </div>
+          ) : certificates.length ? (
+            <ul className="max-h-48 overflow-y-auto divide-y divide-gray-100 rounded-md border border-gray-100 p-2">
+              {certificates.map((c, i) => (
+                <li key={i} className="flex items-center gap-3 py-2 text-sm">
+                  <FaRegFileAlt className="text-gray-400" />
+                  <a
+                    href={c.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline truncate"
+                    title={c.name}
+                  >
+                    {c.name}
+                  </a>
+                  <span className="ml-auto text-xs text-gray-400">{c.type || ""}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-xs text-gray-400">No certificates uploaded</p>
+          )}
+        </div>
+      </div>
+    </aside>
   );
 }
 
-export default TutorProfile;
+/* ============================
+   Tutor Info Form (editable)
+   - fields: name, email, subjects, rate, mode, experience, bio
+   - clean inputs when editing, plain text display otherwise
+   ============================ */
+function TutorInfoForm({ tutorId, form, setForm }) {
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-// ===================================
-// Avatar + Drag & Drop Certificates
-// ===================================
-function TutorAvatar({ tutorId }) {
-  const [avatar, setAvatar] = useState(
-    localStorage.getItem(`tutor_avatar_${tutorId}`) || null
-  );
-  const [certificates, setCertificates] = useState(
-    JSON.parse(localStorage.getItem(`tutor_certs_${tutorId}`) || "[]")
-  );
-
-  const fileInputRef = useRef(null);
-
-  const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setAvatar(reader.result);
-      localStorage.setItem(`tutor_avatar_${tutorId}`, reader.result);
-    };
-    reader.readAsDataURL(file);
-  };
-
-  const handleDrop = (e) => {
-    e.preventDefault();
-    const files = Array.from(e.dataTransfer.files);
-    uploadCertificates(files);
-  };
-
-  const handleCertUpload = (e) => {
-    const files = Array.from(e.target.files);
-    uploadCertificates(files);
-  };
-
-  const uploadCertificates = (files) => {
-    const newCerts = files.map((file) => ({
-      name: file.name,
-      url: URL.createObjectURL(file),
-    }));
-    const updated = [...certificates, ...newCerts];
-    setCertificates(updated);
-    localStorage.setItem(`tutor_certs_${tutorId}`, JSON.stringify(updated));
-  };
-
-  return (
-    <div className="flex flex-col items-center mb-6">
-      <img
-        src={
-          avatar ||
-          `https://ui-avatars.com/api/?name=Tutor+${tutorId}&background=2563eb&color=fff`
-        }
-        alt="Avatar"
-        className="w-24 h-24 rounded-full border-4 border-blue-500 shadow-md mb-3"
-      />
-      <input type="file" accept="image/*" onChange={handleAvatarChange} />
-
-      <div
-        className="mt-4 w-full sm:w-3/4 border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-50 transition"
-        onDrop={handleDrop}
-        onDragOver={(e) => e.preventDefault()}
-        onClick={() => fileInputRef.current.click()}
-      >
-        <p className="text-gray-600">Drag & drop certificates here or click to upload</p>
-        <input
-          type="file"
-          multiple
-          accept=".pdf,.jpg,.jpeg,.png"
-          onChange={handleCertUpload}
-          className="hidden"
-          ref={fileInputRef}
-        />
-      </div>
-
-      {certificates.length > 0 && (
-        <ul className="mt-2 list-disc list-inside text-gray-600 w-full sm:w-3/4">
-          {certificates.map((c, idx) => (
-            <li key={idx}>
-              <a
-                href={c.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-600 hover:underline break-words"
-              >
-                {c.name}
-              </a>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
-}
-
-// ===================================
-// Tutor Info Form - Mobile Friendly
-// ===================================
-function TutorInfoForm({ tutorId }) {
-  const defaultForm = {
-    fullName: "",
-    email: "",
-    phone: "",
-    subjects: "",
-    bio: "",
-    education: "",
-    experience: "",
-    teachingStyle: "",
-    preferredMode: "Online",
-    location: "",
-    hourlyRate: "",
-    availableDays: "",
-    availableTimes: "",
-    contactPreference: "Email",
-  };
-
-  const [form, setForm] = useState(() => {
-    const stored = localStorage.getItem(`tutor_info_${tutorId}`);
-    return stored ? JSON.parse(stored) : defaultForm;
-  });
-
-  const [editing, setEditing] = useState(!localStorage.getItem(`tutor_info_${tutorId}`));
+  const fields = [
+    { key: "fullName", label: "Full Name" },
+    { key: "email", label: "Email" },
+    { key: "subjects", label: "Subjects" },
+    { key: "hourlyRate", label: "Hourly Rate" },
+    { key: "preferredMode", label: "Preferred Mode" },
+    { key: "experience", label: "Experience" },
+  ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSave = (e) => {
-    e.preventDefault();
-    localStorage.setItem(`tutor_info_${tutorId}`, JSON.stringify(form));
-    setEditing(false);
+  const handleSave = () => {
+    setSaving(true);
+    const payload = {
+      userId: tutorId,
+      name: form.fullName,
+      email: form.email,
+      subjects: form.subjects,
+      price: form.hourlyRate,
+      preferredMode: form.preferredMode,
+      experience: form.experience,
+      bio: form.bio,
+      availability: "[]",
+    };
+    axios
+      .post(`${BACKEND_URL}/details`, payload)
+      .then(() => setEditing(false))
+      .catch(console.error)
+      .finally(() => setSaving(false));
   };
 
   return (
-    <div className="bg-gray-50 p-4 sm:p-6 rounded-xl border border-gray-200 mb-6">
-      <h3 className="text-lg sm:text-xl font-semibold text-blue-700 mb-3">
-        Tutor Information
-      </h3>
-
-      {editing ? (
-        <form className="grid grid-cols-1 sm:grid-cols-2 gap-3" onSubmit={handleSave}>
-          {Object.keys(form).map((key) => {
-            const isTextarea = ["bio", "teachingStyle"].includes(key);
-            const isSelect = ["preferredMode", "contactPreference"].includes(key);
-            if (isTextarea)
-              return (
-                <textarea
-                  key={key}
-                  name={key}
-                  value={form[key]}
-                  onChange={handleChange}
-                  placeholder={key.replace(/([A-Z])/g, " $1")}
-                  rows={2}
-                  className="input col-span-1 sm:col-span-2"
-                />
-              );
-            if (isSelect) {
-              const options =
-                key === "preferredMode"
-                  ? ["Online", "In-person", "Hybrid"]
-                  : ["Email", "Phone", "WhatsApp"];
-              return (
-                <select
-                  key={key}
-                  name={key}
-                  value={form[key]}
-                  onChange={handleChange}
-                  className="input"
-                >
-                  {options.map((opt) => (
-                    <option key={opt}>{opt}</option>
-                  ))}
-                </select>
-              );
-            }
-            return (
-              <input
-                key={key}
-                name={key}
-                value={form[key]}
-                onChange={handleChange}
-                placeholder={key.replace(/([A-Z])/g, " $1")}
-                className="input"
-              />
-            );
-          })}
+    <div className="bg-gray-50 rounded-xl p-5 border border-gray-100 shadow-sm">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-800">Tutor Information</h3>
+          <p className="text-sm text-gray-500 mt-1">Public profile details</p>
+        </div>
+        <div className="flex items-center gap-2">
           <button
-            type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg col-span-1 sm:col-span-2 hover:bg-blue-700 mt-2"
+            onClick={() => (editing ? handleSave() : setEditing(true))}
+            disabled={saving}
+            className={`inline-flex items-center gap-2 px-3 py-2 rounded-lg text-white text-sm font-medium transition ${
+              editing ? "bg-green-600 hover:bg-green-700" : "bg-blue-600 hover:bg-blue-700"
+            } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
+            aria-label={editing ? "Save tutor info" : "Edit tutor info"}
           >
-            Save Profile
-          </button>
-        </form>
-      ) : (
-        <div className="space-y-2 text-gray-700">
-          {Object.entries(form).map(([key, value]) => (
-            <p key={key}>
-              <strong className="capitalize">{key.replace(/([A-Z])/g, " $1")}:</strong>{" "}
-              {value || <span className="text-gray-400">Not set</span>}
-            </p>
-          ))}
-          <button
-            onClick={() => setEditing(true)}
-            className="mt-3 bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700"
-          >
-            Edit Info
+            {editing ? <FaSave /> : <FaEdit />}
+            {editing ? (saving ? "Saving..." : "Save") : "Edit"}
           </button>
         </div>
-      )}
+      </div>
+
+      <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {fields.map(({ key, label }) => (
+          <div key={key}>
+            <label className="text-xs font-medium text-gray-600">{label}</label>
+            {editing ? (
+              <input
+                name={key}
+                value={form[key] ?? ""}
+                onChange={handleChange}
+                className="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
+              />
+            ) : (
+              <p className="mt-1 text-sm text-gray-700">{form[key] || <span className="text-gray-400">Not provided</span>}</p>
+            )}
+          </div>
+        ))}
+
+        <div className="sm:col-span-2">
+          <label className="text-xs font-medium text-gray-600">Bio</label>
+          {editing ? (
+            <textarea
+              name="bio"
+              value={form.bio ?? ""}
+              onChange={handleChange}
+              rows={4}
+              className="w-full mt-1 px-3 py-2 bg-white border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-400 focus:outline-none"
+            />
+          ) : (
+            <p className="mt-1 text-sm text-gray-700">{form.bio || <span className="text-gray-400">No bio provided</span>}</p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

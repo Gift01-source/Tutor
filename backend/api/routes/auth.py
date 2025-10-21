@@ -1,10 +1,15 @@
 from flask import Blueprint, request, jsonify
-from api.db import load_users, save_users
+from db import load_users, save_users
+from routes.tutors import load_tutors
+
 import bcrypt
 import uuid
 
 auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
 
+# ----------------------
+# REGISTER ROUTE
+# ----------------------
 @auth_bp.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
@@ -17,10 +22,14 @@ def register():
         return jsonify({"error": "All fields are required"}), 400
 
     users = load_users()
-    if any(u["email"] == email for u in users):
+    if any(u.get("email") == email for u in users):
+
         return jsonify({"error": "Email already registered"}), 400
 
+    # Hash password
     hashed_pw = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+
+    # Create new user
     user = {
         "id": str(uuid.uuid4()),
         "fullName": full_name,
@@ -32,8 +41,19 @@ def register():
     users.append(user)
     save_users(users)
 
-    return jsonify({"message": "User registered successfully"}), 201
+    # Return user info for frontend (so `user.id` exists)
+    return jsonify({
+        "message": "User registered successfully",
+        "user": {
+            "id": user["id"],
+            "fullName": user["fullName"],
+            "role": user["role"]
+        }
+    }), 201
 
+# ----------------------
+# LOGIN ROUTE
+# ----------------------
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
@@ -41,13 +61,30 @@ def login():
     password = data.get("password")
 
     users = load_users()
-    user = next((u for u in users if u["email"] == email), None)
+    user = next((u for u in users if u.get("email") == email), None)
     if not user:
         return jsonify({"error": "User not found"}), 401
+
 
     if not bcrypt.checkpw(password.encode("utf-8"), user["password"].encode("utf-8")):
         return jsonify({"error": "Invalid password"}), 401
 
-    # In production, generate a real JWT token. Here we return a dummy token
     token = str(uuid.uuid4())
-    return jsonify({"token": token, "user": {"id": user["id"], "fullName": user["fullName"], "email": user["email"], "role": user["role"]}}), 200
+
+    # Load tutor details if this user is a tutor
+    tutor_details = None
+    if user["role"] == "tutor":
+        tutors = load_tutors()
+        tutor_details = next((t for t in tutors if t.get("userId") == user["id"]), None)
+
+
+    return jsonify({
+        "token": token,
+        "user": {
+            "id": user["id"],
+            "fullName": user["fullName"],
+            "email": user["email"],
+            "role": user["role"],
+            "tutorDetails": tutor_details  # <--- include tutor details if they exist
+        }
+    }), 200

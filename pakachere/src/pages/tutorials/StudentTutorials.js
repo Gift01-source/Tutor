@@ -13,28 +13,44 @@ export default function StudentTutorials() {
   const [sortOrder, setSortOrder] = useState('newest');
   const [page, setPage] = useState(1);
   const [pageSize] = useState(6);
-  const [profileOpen, setProfileOpen] = useState(false);
-  const [profileData, setProfileData] = useState(null);
   const [activeVideo, setActiveVideo] = useState(null);
-  const [reports, setReports] = useState([]);
   const debounceRef = useRef(null);
 
+  const API_BASE = 'https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev/api/tutors';
+
+  // Fetch all videos and papers
   useEffect(() => {
-    const v = JSON.parse(localStorage.getItem('tutorial_videos') || '[]');
-    const p = JSON.parse(localStorage.getItem('exam_papers') || '[]');
-    setVideos(Array.isArray(v) ? v : []);
-    setPapers(Array.isArray(p) ? p : []);
+    const fetchData = async () => {
+      try {
+        const vidRes = await fetch(`${API_BASE}/all/videos`);
+        const vidsData = await vidRes.json();
+        const vids = Array.isArray(vidsData.videos) ? vidsData.videos : [];
 
-    const uploaderSet = new Set();
-    const subjectSet = new Set();
-    [...v, ...p].forEach(it => { if (it.uploader) uploaderSet.add(it.uploader); if (it.subject) subjectSet.add(it.subject); });
-    setUploaders(['All', ...Array.from(uploaderSet)]);
-    setSubjects(['All', ...Array.from(subjectSet)]);
+        const papRes = await fetch(`${API_BASE}/all/papers`);
+        const papsData = await papRes.json();
+        const paps = Array.isArray(papsData.papers) ? papsData.papers : [];
 
-    const savedReports = JSON.parse(localStorage.getItem('student_reports') || '[]');
-    setReports(Array.isArray(savedReports) ? savedReports : []);
+        setVideos(vids);
+        setPapers(paps);
+
+        // Extract unique uploaders and subjects
+        const uploaderSet = new Set();
+        const subjectSet = new Set();
+        [...vids, ...paps].forEach(it => {
+          if (it.uploader) uploaderSet.add(it.uploader);
+          if (it.subject) subjectSet.add(it.subject);
+        });
+
+        setUploaders(['All', ...Array.from(uploaderSet)]);
+        setSubjects(['All', ...Array.from(subjectSet)]);
+      } catch (err) {
+        console.error('Failed to fetch tutorials:', err);
+      }
+    };
+    fetchData();
   }, []);
 
+  // Debounce search
   useEffect(() => {
     clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => setDebouncedSearch(search.trim()), 300);
@@ -48,7 +64,7 @@ export default function StudentTutorials() {
     (debouncedSearch === '' || normalize(item.title).includes(normalize(debouncedSearch)));
 
   const filteredVideos = useMemo(() => {
-    const list = (videos || []).filter(matchesFilter);
+    const list = videos.filter(matchesFilter);
     list.sort((a, b) => sortOrder === 'newest'
       ? new Date(b.uploadedAt) - new Date(a.uploadedAt)
       : new Date(a.uploadedAt) - new Date(b.uploadedAt));
@@ -56,7 +72,7 @@ export default function StudentTutorials() {
   }, [videos, filterUploader, filterSubject, debouncedSearch, sortOrder]);
 
   const filteredPapers = useMemo(() => {
-    const list = (papers || []).filter(matchesFilter);
+    const list = papers.filter(matchesFilter);
     list.sort((a, b) => sortOrder === 'newest'
       ? new Date(b.uploadedAt) - new Date(a.uploadedAt)
       : new Date(a.uploadedAt) - new Date(b.uploadedAt));
@@ -69,15 +85,6 @@ export default function StudentTutorials() {
 
   const maybe = (v, fallback = '') => v || fallback;
 
-  const openProfile = (uploader) => {
-    if (!uploader) return;
-    const items = [...videos, ...papers].filter(i => i.uploader === uploader);
-    const subjects = Array.from(new Set(items.map(i => i.subject).filter(Boolean)));
-    const bio = `Tutor of ${subjects.length ? subjects.join(', ') : 'various subjects'}. Uploaded ${items.length} item(s).`;
-    setProfileData({ name: uploader, subjects, bio, items });
-    setProfileOpen(true);
-  };
-
   const handlePlayClick = (globalIndex) => {
     setActiveVideo(globalIndex);
     setTimeout(() => {
@@ -86,12 +93,17 @@ export default function StudentTutorials() {
     }, 60);
   };
 
+  const extractYouTubeID = (url) => {
+    const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+    const match = url.match(regExp);
+    return (match && match[2].length === 11) ? match[2] : null;
+  };
+
   const reportItem = ({ type, item, reason }) => {
     const rpt = { id: Date.now(), type, itemTitle: item.title, itemUrl: item.url, uploader: item.uploader, reason: reason || 'Report', reportedAt: new Date().toISOString() };
     const all = JSON.parse(localStorage.getItem('student_reports') || '[]');
     all.push(rpt);
     localStorage.setItem('student_reports', JSON.stringify(all));
-    setReports(all);
     alert('Report submitted. Thank you.');
   };
 
@@ -104,43 +116,10 @@ export default function StudentTutorials() {
       <div className="upload-container">
         <h1 className="upload-title">Tutorials & Papers</h1>
 
-        {/* Search bar top */}
-        <div className="top-search-bar">
-          <input
-            type="search"
-            placeholder="Search tutorials..."
-            value={search}
-            onChange={e => setSearch(e.target.value)}
-            className="input-field search-input"
-          />
-          <button className="upload-button reset-button" onClick={resetFilters}>Reset</button>
-        </div>
-
         {/* Filters */}
-        <div className="search-row">
-          <div className="filter-group">
-            <label htmlFor="uploader">Tutor</label>
-            <select id="uploader" value={filterUploader} onChange={(e) => { setFilterUploader(e.target.value); setPage(1); }} className="input-field">
-              {uploaders.map((u, i) => <option key={i} value={u}>{u}</option>)}
-            </select>
-
-            <label htmlFor="subject">Subject</label>
-            <select id="subject" value={filterSubject} onChange={(e) => { setFilterSubject(e.target.value); setPage(1); }} className="input-field">
-              {subjects.map((s, i) => <option key={i} value={s}>{s}</option>)}
-            </select>
-
-            <label htmlFor="sort">Sort</label>
-            <select id="sort" value={sortOrder} onChange={(e) => setSortOrder(e.target.value)} className="input-field">
-              <option value="newest">Newest first</option>
-              <option value="oldest">Oldest first</option>
-            </select>
-          </div>
-        </div>
-
-        {/* Counts */}
-        <div className="counts">
-          <div>{filteredVideos.length} tutorials</div>
-          <div>{filteredPapers.length} papers</div>
+        <div className="top-search-bar">
+          <input type="search" placeholder="Search tutorials..." value={search} onChange={e => setSearch(e.target.value)} className="input-field search-input"/>
+          <button className="upload-button reset-button" onClick={resetFilters}>Reset</button>
         </div>
 
         {/* Tutorials */}
@@ -149,25 +128,38 @@ export default function StudentTutorials() {
           <div className="card-grid">
             {pagedVideos.map((vid, idx) => {
               const globalIndex = (page - 1) * pageSize + idx;
+              const ytID = extractYouTubeID(vid.url);
+
               return (
                 <div className="card" key={globalIndex} data-video-index={globalIndex}>
                   <div className="card-top">
-                    <div className="card-title">{maybe(vid.title, 'Untitled')}</div>
+                    <div className="card-title">{maybe(vid.title)}</div>
                     <div className="card-time">
-                      <button onClick={() => openProfile(vid.uploader)} className="uploader-btn">{maybe(vid.uploader, 'Unknown')}</button>
+                      <button className="uploader-btn">{maybe(vid.uploader)}</button>
                       {vid.uploadedAt ? ` • ${new Date(vid.uploadedAt).toLocaleString()}` : ''}
                       {vid.subject ? ` • ${vid.subject}` : ''}
                     </div>
                   </div>
                   <div className="card-media">
-                    {activeVideo === globalIndex ? (
-                      <video controls src={vid.url} className="video-player"/>
+                    {ytID ? (
+                      <iframe
+                        width="100%"
+                        height="315"
+                        src={`https://www.youtube.com/embed/${ytID}`}
+                        title={vid.title}
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      />
                     ) : (
-                      <div className="thumbnail-wrapper">
-                        {vid.thumbnail ? <img src={vid.thumbnail} alt={vid.title} className="thumbnail"/> :
-                          <div className="thumbnail-placeholder">Thumbnail</div>}
-                        <button onClick={() => handlePlayClick(globalIndex)} className="play-btn">▶ Play</button>
-                      </div>
+                      activeVideo === globalIndex ? (
+                        <video controls autoPlay src={vid.url} className="video-player" />
+                      ) : (
+                        <div className="thumbnail-wrapper">
+                          <div className="thumbnail-placeholder">Thumbnail</div>
+                          <button onClick={() => handlePlayClick(globalIndex)} className="play-btn">▶ Play</button>
+                        </div>
+                      )
                     )}
                     <div className="card-description">{vid.description}</div>
                   </div>
@@ -198,9 +190,9 @@ export default function StudentTutorials() {
             {filteredPapers.map((paper, idx) => (
               <div className="card" key={idx}>
                 <div className="card-top">
-                  <div className="card-title">{maybe(paper.title, 'Untitled')}</div>
+                  <div className="card-title">{maybe(paper.title)}</div>
                   <div className="card-time">
-                    <button onClick={() => openProfile(paper.uploader)} className="uploader-btn">{maybe(paper.uploader, 'Unknown')}</button>
+                    <button className="uploader-btn">{maybe(paper.uploader)}</button>
                     {paper.uploadedAt ? ` • ${new Date(paper.uploadedAt).toLocaleString()}` : ''}
                     {paper.subject ? ` • ${paper.subject}` : ''}
                   </div>

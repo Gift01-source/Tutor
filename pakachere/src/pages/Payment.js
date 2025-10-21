@@ -16,7 +16,6 @@ function Payment() {
   const [mobileNumber, setMobileNumber] = useState('');
   const [countryCode, setCountryCode] = useState(countryOptions[0].code);
   const [processing, setProcessing] = useState(false);
-  const [success, setSuccess] = useState(false);
 
   const sessionOptions = [
     { label: '1 Session (1 hr)', value: 2000 },
@@ -26,13 +25,44 @@ function Payment() {
   const bankOptions = ['National Bank of Malawi', 'FDH Bank', 'Standard Bank', 'NBS Bank'];
   const mobileOptions = ['Airtel Money', 'TNM Mpamba'];
 
-  const handlePayment = (e) => {
+  // ----------- Connect to Backend & Flutterwave -----------
+  const handlePayment = async (e) => {
     e.preventDefault();
+    if (!amount || !method) return alert("Select amount & method");
     setProcessing(true);
-    setTimeout(() => {
+
+    const payload = {
+      method,
+      amount,
+      bank,
+      account_number: accountNumber,
+      mobile_provider: mobileProvider,
+      mobile_number: mobileNumber,
+      country_code: countryCode,
+      name: "Student",
+      email: "student@example.com"
+    };
+
+    try {
+      const res = await fetch("https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev/api/payments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+      if (res.ok) {
+        setProcessing(false);
+        // Redirect to Flutterwave checkout page
+        window.location.href = data.payment_link;
+      } else {
+        setProcessing(false);
+        alert(data.error || "Payment failed");
+      }
+    } catch (err) {
       setProcessing(false);
-      setSuccess(true);
-    }, 1500);
+      console.error(err);
+      alert("Payment failed. Check backend connection.");
+    }
   };
 
   return (
@@ -41,87 +71,68 @@ function Payment() {
         <h1 style={{ fontSize: '1.8rem', fontWeight: 'bold', color: '#2563eb', marginBottom: '1rem' }}>Payment</h1>
         <p style={{ color: '#2563eb', marginBottom: '1.5rem' }}>Choose a session package and payment method</p>
 
-        {!success ? (
-          <>
-            {/* Session Amount Cards */}
-            <div className="session-cards" style={{ display: 'flex', gap: '0.8rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '1.2rem' }}>
-              {sessionOptions.map((option) => (
-                <div key={option.value} onClick={() => setAmount(option.value)} style={cardStyle(option.value === amount)}>
-                  <p style={{ fontWeight: '600', marginBottom: '0.3rem', fontSize: '0.95rem' }}>{option.label}</p>
-                  <p style={{ fontSize: '0.9rem' }}>K{option.value.toLocaleString()}</p>
-                </div>
-              ))}
+        <div className="session-cards" style={{ display: 'flex', gap: '0.8rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '1.2rem' }}>
+          {sessionOptions.map((option) => (
+            <div key={option.value} onClick={() => setAmount(option.value)} style={cardStyle(option.value === amount)}>
+              <p style={{ fontWeight: '600', marginBottom: '0.3rem', fontSize: '0.95rem' }}>{option.label}</p>
+              <p style={{ fontSize: '0.9rem' }}>K{option.value.toLocaleString()}</p>
             </div>
+          ))}
+        </div>
 
-            {/* Payment Method Cards */}
-            <div className="payment-methods" style={{ display: 'flex', gap: '0.8rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '1.2rem' }}>
-              <PaymentCard title="Bank" image="https://cdn-icons-png.flaticon.com/512/4228/4228706.png" selected={method === 'bank'} onClick={() => setMethod('bank')} />
-              <PaymentCard title="Mobile Money" image="https://cdn-icons-png.flaticon.com/512/2821/2821637.png" selected={method === 'mobile'} onClick={() => setMethod('mobile')} />
-            </div>
+        <div className="payment-methods" style={{ display: 'flex', gap: '0.8rem', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '1.2rem' }}>
+          <PaymentCard title="Bank" image="https://cdn-icons-png.flaticon.com/512/4228/4228706.png" selected={method === 'bank'} onClick={() => setMethod('bank')} />
+          <PaymentCard title="Mobile Money" image="https://cdn-icons-png.flaticon.com/512/2821/2821637.png" selected={method === 'mobile'} onClick={() => setMethod('mobile')} />
+        </div>
 
-            {/* Dynamic Form */}
-            {method && (
-              <form onSubmit={handlePayment} style={{ textAlign: 'left', marginTop: '1rem' }}>
-                {method === 'bank' && (
-                  <>
-                    <label style={labelStyle}>Select Bank</label>
-                    <select value={bank} onChange={(e) => setBank(e.target.value)} required style={inputStyle}>
-                      <option value="">Choose Bank</option>
-                      {bankOptions.map((b) => <option key={b}>{b}</option>)}
-                    </select>
+        {method && (
+          <form onSubmit={handlePayment} style={{ textAlign: 'left', marginTop: '1rem' }}>
+            {method === 'bank' && (
+              <>
+                <label style={labelStyle}>Select Bank</label>
+                <select value={bank} onChange={(e) => setBank(e.target.value)} required style={inputStyle}>
+                  <option value="">Choose Bank</option>
+                  {bankOptions.map((b) => <option key={b}>{b}</option>)}
+                </select>
 
-                    <label style={labelStyle}>Account Number</label>
-                    <input type="text" placeholder="Enter your account number" value={accountNumber} onChange={(e) => setAccountNumber(e.target.value)} required style={inputStyle} />
-                  </>
-                )}
-
-                {method === 'mobile' && (
-                  <>
-                    <label style={labelStyle}>Mobile Money Provider</label>
-                    <select value={mobileProvider} onChange={(e) => setMobileProvider(e.target.value)} required style={inputStyle}>
-                      <option value="">Choose Provider</option>
-                      {mobileOptions.map((m) => <option key={m}>{m}</option>)}
-                    </select>
-
-                    <label style={labelStyle}>Mobile Number</label>
-                    <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
-                      {/* Country Code with Flag */}
-                      <select
-                        value={countryCode}
-                        onChange={(e) => setCountryCode(e.target.value)}
-                        style={countryInputStyle}
-                      >
-                        {countryOptions.map((c) => (
-                          <option key={c.code} value={c.code}>
-                            {c.flag} {c.code}
-                          </option>
-                        ))}
-                      </select>
-
-                      {/* Phone Number */}
-                      <input type="text" placeholder="Enter number" value={mobileNumber} onChange={(e) => setMobileNumber(e.target.value)} required style={{ ...inputStyle, flex: 1 }} />
-                    </div>
-                  </>
-                )}
-
-                {amount && method && (
-                  <button type="submit" disabled={processing} style={payButtonStyle(processing, amount, method)}>
-                    {processing ? 'Processing...' : `Pay K${amount.toLocaleString()} via ${method === 'bank' ? 'Bank' : 'Mobile Money'}`}
-                  </button>
-                )}
-              </form>
+                <label style={labelStyle}>Account Number</label>
+                <input type="text" placeholder="Enter your account number" value={accountNumber} onChange={(e) => setAccountNumber(e.target.value)} required style={inputStyle} />
+              </>
             )}
-          </>
-        ) : (
-          <div style={{ color: '#16a34a', fontWeight: '600', marginTop: '1rem', textAlign: 'center' }}>
-            ✅ Payment of <strong>K{amount.toLocaleString()}</strong> successful via <strong>{method === 'bank' ? 'Bank' : 'Mobile Money'}</strong>!
-          </div>
+
+            {method === 'mobile' && (
+              <>
+                <label style={labelStyle}>Mobile Money Provider</label>
+                <select value={mobileProvider} onChange={(e) => setMobileProvider(e.target.value)} required style={inputStyle}>
+                  <option value="">Choose Provider</option>
+                  {mobileOptions.map((m) => <option key={m}>{m}</option>)}
+                </select>
+
+                <label style={labelStyle}>Mobile Number</label>
+                <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>
+                  <select value={countryCode} onChange={(e) => setCountryCode(e.target.value)} style={countryInputStyle}>
+                    {countryOptions.map((c) => (
+                      <option key={c.code} value={c.code}>{c.flag} {c.code}</option>
+                    ))}
+                  </select>
+                  <input type="text" placeholder="Enter number" value={mobileNumber} onChange={(e) => setMobileNumber(e.target.value)} required style={{ ...inputStyle, flex: 1 }} />
+                </div>
+              </>
+            )}
+
+            {amount && method && (
+              <button type="submit" disabled={processing} style={payButtonStyle(processing)}>
+                {processing ? 'Processing...' : `Pay K${amount.toLocaleString()} via ${method === 'bank' ? 'Bank' : 'Mobile Money'}`}
+              </button>
+            )}
+          </form>
         )}
       </div>
     </div>
   );
 }
 
+// ---------------- Styles ----------------
 const cardStyle = (selected) => ({
   flex: '0 0 45%',
   background: selected ? '#2563eb' : '#fff',
@@ -185,7 +196,7 @@ const PaymentCard = ({ title, image, selected, onClick }) => (
   </div>
 );
 
-const payButtonStyle = (processing, amount, method) => ({
+const payButtonStyle = (processing) => ({
   width: '100%',
   padding: '12px',
   borderRadius: '32px',

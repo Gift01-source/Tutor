@@ -1,9 +1,12 @@
+
 import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 import { FaBook, FaBolt, FaHome, FaVideo, FaCalendarAlt, FaSearch, FaMoneyCheckAlt } from 'react-icons/fa';
 
 function Navbar({ role }) {
   const navigate = useNavigate();
+  const { tutorId } = useParams();
   const [darkMode, setDarkMode] = React.useState(() => localStorage.getItem('darkMode') === 'true');
   const [menuOpen, setMenuOpen] = React.useState(false);
   const [lang, setLang] = React.useState(localStorage.getItem('lang') || 'en');
@@ -35,7 +38,11 @@ function Navbar({ role }) {
   if (role === 'tutor') {
     mainLinks = [
       { icon: <FaHome />, label: 'Home', to: '/tutor-dashboard' },
-      { icon: <FaVideo />, label: 'Tutorials', to: '/tutor-upload' },
+      { icon: <FaVideo />, label: 'Tutorials', to: '/tutor/${tutorId}/upload' },
+      { icon: <FaVideo />, label: 'Live', to: '/video' },
+      
+
+
       { icon: <FaMoneyCheckAlt />, label: 'Payment', to: '/payment' },
       { icon: <FaCalendarAlt />, label: 'My Sessions', to: '/tutor-sessions' },
     ];
@@ -47,7 +54,7 @@ function Navbar({ role }) {
   } else {
     mainLinks = [
       { icon: <FaHome />, label: 'Home', to: '/student-dashboard' },
-      { icon: <FaBook />, label: 'Book', to: '/book-session' },
+      { icon: <FaBook />, label: 'Book', to: '/book' },
       { icon: <FaVideo />, label: 'Tutorials', to: '/student-tutorials' },
       { icon: <FaMoneyCheckAlt />, label: 'Payment', to: '/payment' },
       { icon: <FaSearch />, label: 'Search Tutors', to: '/tutor-search' },

@@ -1,0 +1,30 @@
+[
+    {
+        "id": "d8b37e39-dac9-452b-ba99-6ed0f3033cba",
+        "tutorId": 1,
+        "message": "New booking from Student on topic 'chemistry'",
+        "timestamp": "2025-10-20T15:39:00.943736",
+        "read": false
+    },
+    {
+        "id": "3d4f71d5-8b98-4f1c-8545-2a1eefbb85ac",
+        "tutorId": 1,
+        "message": "New booking from Student on topic 'maths'",
+        "timestamp": "2025-10-20T15:39:56.122444",
+        "read": false
+    },
+    {
+        "id": "0ea7ec5e-192b-4e88-a1d7-f12b8e4003af",
+        "tutorId": 1,
+        "message": "New booking from Student on topic 'geography'",
+        "timestamp": "2025-10-20T15:40:47.389796",
+        "read": false
+    },
+    {
+        "id": "cfbc853d-82e4-4ea4-b1e2-f84dd43c0bc5",
+        "tutorId": "0ce6a52c-bafe-489a-a80c-de1ae905f38f",
+        "message": "New booking from Student on topic 'maths'",
+        "timestamp": "2025-10-20T16:38:21.507225",
+        "read": false
+    }
+]

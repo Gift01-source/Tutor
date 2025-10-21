@@ -1,477 +1,280 @@
-import React, { useEffect, useState } from 'react';
-import './TutorUpload.css';
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { FaUpload, FaFileVideo, FaFileAlt } from "react-icons/fa";
+import "./TutorUpload.css";
 
 export default function TutorUpload() {
-  const [uploaderName, setUploaderName] = useState('');
-  const [videoTitle, setVideoTitle] = useState('');
-  const [videoUrl, setVideoUrl] = useState('');
+  const { tutorId: routeTutorId } = useParams();
+  const tutorId = routeTutorId || "tutor-123";
+
+  const [uploaderName, setUploaderName] = useState("");
+  const [videoTitle, setVideoTitle] = useState("");
   const [videoFile, setVideoFile] = useState(null);
-  const [videoThumbnail, setVideoThumbnail] = useState(null);
-  const [videoSubject, setVideoSubject] = useState('');
-  const [videoGrade, setVideoGrade] = useState('');
-  const [videoDescription, setVideoDescription] = useState('');
-  const [videoPublic, setVideoPublic] = useState(true);
-
-  const [paperTitle, setPaperTitle] = useState('');
-  const [paperUrl, setPaperUrl] = useState('');
+  const [videoDescription, setVideoDescription] = useState("");
+  const [paperTitle, setPaperTitle] = useState("");
   const [paperFile, setPaperFile] = useState(null);
-  const [paperSubject, setPaperSubject] = useState('');
-  const [paperGrade, setPaperGrade] = useState('');
-  const [paperDescription, setPaperDescription] = useState('');
-  const [paperPublic, setPaperPublic] = useState(true);
+  const [paperDescription, setPaperDescription] = useState("");
 
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
+  const [uploadingType, setUploadingType] = useState(null);
+  const [progress, setProgress] = useState(0);
   const [pastVideos, setPastVideos] = useState([]);
   const [pastPapers, setPastPapers] = useState([]);
 
+  const API_BASE =
+    "https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev/api/tutors";
+
+  const showMsg = (msg) => {
+    setMessage(msg);
+    setTimeout(() => setMessage(""), 4000);
+  };
+
+  const fetchVideos = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/${tutorId}/videos`);
+      const data = await res.json();
+      // Ensure full URL for video playback
+      const videos = (data || []).map((v) => ({
+        ...v,
+        url: v.url.startsWith("http") ? v.url : `${API_BASE}/uploads/videos/${v.url}`,
+      }));
+      setPastVideos(videos);
+    } catch {
+      console.log("Failed to load videos");
+    }
+  };
+
+  const fetchPapers = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/${tutorId}/papers`);
+      const data = await res.json();
+      const papers = (data || []).map((p) => ({
+        ...p,
+        url: p.url.startsWith("http") ? p.url : `${API_BASE}/uploads/papers/${p.url}`,
+      }));
+      setPastPapers(papers);
+    } catch {
+      console.log("Failed to load papers");
+    }
+  };
+
   useEffect(() => {
-    setPastVideos(JSON.parse(localStorage.getItem('tutorial_videos') || '[]'));
-    setPastPapers(JSON.parse(localStorage.getItem('exam_papers') || '[]'));
-  }, []);
+    fetchVideos();
+    fetchPapers();
+  }, [tutorId]);
 
-  useEffect(() => {
-    if (!message) return;
-    const t = setTimeout(() => setMessage(''), 3000);
-    return () => clearTimeout(t);
-  }, [message]);
+  const handleUpload = async (type) => {
+    const isVideo = type === "video";
+    const title = isVideo ? videoTitle : paperTitle;
+    const file = isVideo ? videoFile : paperFile;
+    const description = isVideo ? videoDescription : paperDescription;
 
-  const saveVideos = (items) => {
-    localStorage.setItem('tutorial_videos', JSON.stringify(items));
-    setPastVideos(items);
-  };
-
-  const savePapers = (items) => {
-    localStorage.setItem('exam_papers', JSON.stringify(items));
-    setPastPapers(items);
-  };
-
-  // Generate thumbnail for an uploaded video File
-  const generateVideoThumbnail = (file) => {
-    return new Promise((resolve) => {
-      if (!file) return resolve(null);
-      const url = URL.createObjectURL(file);
-      const video = document.createElement('video');
-      video.preload = 'metadata';
-      video.src = url;
-      video.muted = true;
-      video.playsInline = true;
-
-      const cleanup = () => {
-        try { URL.revokeObjectURL(url); } catch {}
-        video.src = '';
-      };
-
-      const capture = () => {
-        try {
-          const canvas = document.createElement('canvas');
-          const w = video.videoWidth;
-          const h = video.videoHeight;
-          if (!w || !h) {
-            cleanup();
-            return resolve(null);
-          }
-          const maxW = 640;
-          const scale = w > maxW ? maxW / w : 1;
-          canvas.width = Math.floor(w * scale);
-          canvas.height = Math.floor(h * scale);
-          const ctx = canvas.getContext('2d');
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-          cleanup();
-          resolve(dataUrl);
-        } catch (err) {
-          cleanup();
-          resolve(null);
-        }
-      };
-
-      const handleLoadedMeta = () => {
-        // seek to a point (1s or 10% of duration)
-        try {
-          const t = Math.min(1, (video.duration || 0) * 0.1);
-          video.currentTime = t;
-        } catch {
-          capture();
-        }
-      };
-
-      video.addEventListener('loadedmetadata', handleLoadedMeta);
-      video.addEventListener('seeked', capture);
-
-      // fallback
-      setTimeout(() => {
-        if (!video.videoWidth) {
-          capture();
-        }
-      }, 1500);
-    });
-  };
-
-  // Helpers to push items into localStorage with full shape
-  const handleVideoUpload = async (e) => {
-    e.preventDefault();
-    if (!videoTitle || (!videoUrl && !videoFile)) {
-      setMessage('Please provide a title and a video URL or file.');
+    if (!title || !file) {
+      showMsg("Please provide a title and select a file to upload.");
       return;
     }
 
-    const current = JSON.parse(localStorage.getItem('tutorial_videos') || '[]');
+    const formData = new FormData();
+    formData.append("title", title);
+    formData.append("uploader", uploaderName || "Tutor");
+    formData.append("description", description);
+    formData.append("file", file);
 
-    // if a file was selected, create object URL for immediate preview/usage
-    let urlToSave = videoUrl;
-    if (videoFile) {
-      const objUrl = URL.createObjectURL(videoFile);
-      urlToSave = objUrl;
-    }
+    setUploadingType(type);
+    setProgress(0);
 
-    // generate thumbnail if we have a file
-    let thumbnail = videoThumbnail;
-    if (!thumbnail && videoFile) {
-      thumbnail = await generateVideoThumbnail(videoFile);
-    }
+    const endpoint = `${API_BASE}/${tutorId}/${isVideo ? "videos" : "papers"}`;
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", endpoint, true);
 
-    const item = {
-      id: Date.now().toString(),
-      title: videoTitle,
-      url: urlToSave,
-      uploadedAt: new Date().toISOString(),
-      uploader: uploaderName || 'Tutor',
-      uploaderId: uploaderName ? uploaderName.replace(/\s+/g, '_').toLowerCase() : 'tutor',
-      thumbnail: thumbnail || null,
-      subject: videoSubject || '',
-      grade: videoGrade || '',
-      description: videoDescription || '',
-      public: Boolean(videoPublic),
-      type: 'video',
-      size: videoFile ? videoFile.size : undefined,
-      filename: videoFile ? videoFile.name : undefined,
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable) {
+        const percent = Math.round((e.loaded / e.total) * 100);
+        setProgress(percent);
+      }
     };
 
-    current.push(item);
-    saveVideos(current);
+    xhr.onload = () => {
+      setUploadingType(null);
+      setProgress(0);
+      if (xhr.status === 200) {
+        showMsg(`${isVideo ? "Video" : "Paper"} uploaded successfully!`);
+        if (isVideo) fetchVideos();
+        else fetchPapers();
+      } else {
+        showMsg("Upload failed: " + xhr.responseText);
+      }
 
-    // clear form but preserve uploaderName
-    setVideoTitle('');
-    setVideoUrl('');
-    setVideoFile(null);
-    setVideoThumbnail(null);
-    setVideoSubject('');
-    setVideoGrade('');
-    setVideoDescription('');
-    setVideoPublic(true);
-    setMessage('Video uploaded and saved locally.');
-  };
-
-  const handlePaperUpload = (e) => {
-    e.preventDefault();
-    if (!paperTitle || (!paperUrl && !paperFile)) {
-      setMessage('Please provide a title and a paper URL or file.');
-      return;
-    }
-
-    const current = JSON.parse(localStorage.getItem('exam_papers') || '[]');
-
-    let urlToSave = paperUrl;
-    if (paperFile) {
-      const objUrl = URL.createObjectURL(paperFile);
-      urlToSave = objUrl;
-    }
-
-    const item = {
-      id: Date.now().toString(),
-      title: paperTitle,
-      url: urlToSave,
-      uploadedAt: new Date().toISOString(),
-      uploader: uploaderName || 'Tutor',
-      uploaderId: uploaderName ? uploaderName.replace(/\s+/g, '_').toLowerCase() : 'tutor',
-      thumbnail: null,
-      subject: paperSubject || '',
-      grade: paperGrade || '',
-      description: paperDescription || '',
-      public: Boolean(paperPublic),
-      type: 'paper',
-      size: paperFile ? paperFile.size : undefined,
-      filename: paperFile ? paperFile.name : undefined,
+      if (isVideo) {
+        setVideoTitle("");
+        setVideoFile(null);
+        setVideoDescription("");
+      } else {
+        setPaperTitle("");
+        setPaperFile(null);
+        setPaperDescription("");
+      }
     };
 
-    current.push(item);
-    savePapers(current);
+    xhr.onerror = () => {
+      setUploadingType(null);
+      setProgress(0);
+      showMsg("Upload error. Please check backend connection.");
+    };
 
-    setPaperTitle('');
-    setPaperUrl('');
-    setPaperFile(null);
-    setPaperSubject('');
-    setPaperGrade('');
-    setPaperDescription('');
-    setPaperPublic(true);
-    setMessage('Paper uploaded and saved locally.');
-  };
-
-  // file input handlers
-  const onVideoFileSelected = async (file) => {
-    if (!file) return;
-    if (!file.type.startsWith('video')) {
-      setMessage('Please select a valid video file.');
-      return;
-    }
-    setVideoFile(file);
-    const url = URL.createObjectURL(file);
-    setVideoUrl(url);
-
-    // generate thumbnail async and set state
-    const thumb = await generateVideoThumbnail(file);
-    if (thumb) setVideoThumbnail(thumb);
-    if (!videoTitle) setVideoTitle(file.name.replace(/\.[^/.]+$/, ''));
-  };
-
-  const onPaperFileSelected = (file) => {
-    if (!file) return;
-    const allowed = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-    if (!allowed.includes(file.type) && !/\.(pdf|doc|docx)$/i.test(file.name)) {
-      setMessage('Unsupported paper file type.');
-      return;
-    }
-    setPaperFile(file);
-    const url = URL.createObjectURL(file);
-    setPaperUrl(url);
-    if (!paperTitle) setPaperTitle(file.name.replace(/\.[^/.]+$/, ''));
-  };
-
-  // delete helpers
-  const deleteVideo = (id) => {
-    const list = JSON.parse(localStorage.getItem('tutorial_videos') || '[]').filter(i => i.id !== id);
-    saveVideos(list);
-    setMessage('Video deleted.');
-  };
-
-  const deletePaper = (id) => {
-    const list = JSON.parse(localStorage.getItem('exam_papers') || '[]').filter(i => i.id !== id);
-    savePapers(list);
-    setMessage('Paper deleted.');
+    xhr.send(formData);
   };
 
   return (
     <div className="upload-page">
-      <div className="upload-container">
-        <h1 className="upload-title">Upload Tutorials & Exam Papers</h1>
+      <div className="upload-header">
+        <h1>🎬 Tutor Studio</h1>
+        <p>Upload your tutorial videos or notes</p>
+      </div>
 
-        {message && <div className="upload-message">{message}</div>}
+      {message && <div className="upload-message">{message}</div>}
 
-        <div style={{ marginBottom: 12 }}>
-          <label style={{ display: 'block', marginBottom: 6, fontWeight: 600 }}>Uploader name</label>
-          <input
-            type="text"
-            placeholder="Your name (will appear to students)"
-            value={uploaderName}
-            onChange={(e) => setUploaderName(e.target.value)}
-            className="input-field"
-            style={{ width: '100%' }}
-          />
-        </div>
-
-        {/* Video upload form */}
-        <form onSubmit={handleVideoUpload} className="upload-form">
-          <h2 className="section-title">Upload Tutorial Video</h2>
+      <div className="upload-sections">
+        {/* Video Upload */}
+        <div className="upload-card">
+          <div className="upload-card-header">
+            <FaFileVideo size={22} />
+            <h2>Upload Video</h2>
+          </div>
 
           <input
             type="text"
-            placeholder="Tutorial Title"
+            placeholder="Video title"
             value={videoTitle}
             onChange={(e) => setVideoTitle(e.target.value)}
             className="input-field"
           />
-
-          <input
-            type="url"
-            placeholder="Video URL (optional if you upload a file)"
-            value={videoUrl}
-            onChange={(e) => setVideoUrl(e.target.value)}
-            className="input-field"
-          />
-
-          <input
-            type="file"
-            accept="video/*"
-            className="input-field"
-            onChange={(e) => onVideoFileSelected(e.target.files[0])}
-          />
-
-          <input
-            type="text"
-            placeholder="Subject (optional)"
-            value={videoSubject}
-            onChange={(e) => setVideoSubject(e.target.value)}
-            className="input-field"
-          />
-
-          <input
-            type="text"
-            placeholder="Grade (optional)"
-            value={videoGrade}
-            onChange={(e) => setVideoGrade(e.target.value)}
-            className="input-field"
-          />
-
           <textarea
-            placeholder="Short description (optional)"
+            placeholder="Video description"
             value={videoDescription}
             onChange={(e) => setVideoDescription(e.target.value)}
             className="input-field"
-            style={{ minHeight: 80 }}
           />
+          <input
+            type="file"
+            accept="video/*"
+            onChange={(e) => setVideoFile(e.target.files[0])}
+            className="input-field"
+          />
+          {videoFile && (
+            <video
+              src={URL.createObjectURL(videoFile)}
+              controls
+              width="100%"
+              className="preview-video"
+            />
+          )}
 
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <input type="checkbox" checked={videoPublic} onChange={(e) => setVideoPublic(e.target.checked)} />
-            <span>Make this tutorial public</span>
-          </label>
+          <button
+            className="upload-btn"
+            onClick={() => handleUpload("video")}
+            disabled={uploadingType === "video"}
+          >
+            {uploadingType === "video" ? "Uploading..." : <><FaUpload /> Upload Video</>}
+          </button>
 
-          {videoThumbnail && (
-            <div style={{ marginTop: 8 }}>
-              <label className="preview-label">Generated thumbnail</label>
-              <img src={videoThumbnail} alt="thumbnail" style={{ width: '100%', maxWidth: 320, borderRadius: 8 }} />
+          {uploadingType === "video" && (
+            <div className="progress-bar">
+              <div className="progress-bar-fill" style={{ width: `${progress}%` }}></div>
             </div>
           )}
 
-          {videoUrl && !videoThumbnail && (
-            <div style={{ marginTop: 8 }}>
-              <label className="preview-label">Preview</label>
-              <video controls src={videoUrl} style={{ width: '100%', maxWidth: 320, borderRadius: 8 }} />
-            </div>
-          )}
-
-          <button type="submit" className="upload-button">Upload Video</button>
-        </form>
-
-        {/* Past videos */}
-        <div className="past-section">
-          <h2 className="section-title">Past Video Previews</h2>
-          {pastVideos.length === 0 ? (
-            <p className="muted">No tutorials available.</p>
-          ) : (
-            <div className="card-grid">
-              {pastVideos.map((vid) => (
-                <div className="card" key={vid.id}>
-                  <div className="card-top">
-                    <div className="card-title">{vid.title}</div>
-                    <div className="card-time">{new Date(vid.uploadedAt).toLocaleString()}</div>
-                  </div>
-
-                  {vid.thumbnail ? (
-                    <img className="card-media" src={vid.thumbnail} alt={vid.title} />
-                  ) : (
-                    <video className="card-media" controls src={vid.url} />
-                  )}
-
-                  <div style={{ marginTop: 8, color: '#374151' }}>{vid.description}</div>
-                  <div className="card-actions">
-                    <button className="link-button" onClick={() => window.open(vid.url, '_blank')}>Open</button>
-                    <button className="link-button" onClick={() => navigator.clipboard?.writeText(vid.url)}>Copy Link</button>
-                    <button className="delete-button" onClick={() => deleteVideo(vid.id)}>Delete</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          <div className="uploaded-list">
+            {pastVideos.map((v, i) => (
+              <div className="uploaded-item" key={i}>
+                <video src={v.url} controls width="300" />
+                <p>{v.title}</p>
+                <button
+                  className="delete-btn"
+                  onClick={async () => {
+                    if (window.confirm("Delete this video?")) {
+                      try {
+                        await fetch(`${API_BASE}/${tutorId}/videos/${v.id}`, { method: "DELETE" });
+                        fetchVideos();
+                      } catch (err) {
+                        console.log("Failed to delete video", err);
+                      }
+                    }
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <hr style={{ margin: '18px 0' }} />
-
-        {/* Paper upload form */}
-        <form onSubmit={handlePaperUpload} className="upload-form">
-          <h2 className="section-title">Upload Paper</h2>
+        {/* Paper Upload */}
+        <div className="upload-card">
+          <div className="upload-card-header">
+            <FaFileAlt size={22} />
+            <h2>Upload Paper</h2>
+          </div>
 
           <input
             type="text"
-            placeholder="Paper Title"
+            placeholder="Paper title"
             value={paperTitle}
             onChange={(e) => setPaperTitle(e.target.value)}
             className="input-field"
           />
-
-          <input
-            type="url"
-            placeholder="Paper URL (optional if you upload a file)"
-            value={paperUrl}
-            onChange={(e) => setPaperUrl(e.target.value)}
-            className="input-field"
-          />
-
-          <input
-            type="file"
-            accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-            className="input-field"
-            onChange={(e) => onPaperFileSelected(e.target.files[0])}
-          />
-
-          <input
-            type="text"
-            placeholder="Subject (optional)"
-            value={paperSubject}
-            onChange={(e) => setPaperSubject(e.target.value)}
-            className="input-field"
-          />
-
-          <input
-            type="text"
-            placeholder="Grade (optional)"
-            value={paperGrade}
-            onChange={(e) => setPaperGrade(e.target.value)}
-            className="input-field"
-          />
-
           <textarea
-            placeholder="Short description (optional)"
+            placeholder="Paper description"
             value={paperDescription}
             onChange={(e) => setPaperDescription(e.target.value)}
             className="input-field"
-            style={{ minHeight: 80 }}
           />
+          <input
+            type="file"
+            accept=".pdf,.doc,.docx"
+            onChange={(e) => setPaperFile(e.target.files[0])}
+            className="input-field"
+          />
+          {paperFile && <p className="preview-text">📄 {paperFile.name}</p>}
 
-          <label style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-            <input type="checkbox" checked={paperPublic} onChange={(e) => setPaperPublic(e.target.checked)} />
-            <span>Make this paper public</span>
-          </label>
+          <button
+            className="upload-btn"
+            onClick={() => handleUpload("paper")}
+            disabled={uploadingType === "paper"}
+          >
+            {uploadingType === "paper" ? "Uploading..." : <><FaUpload /> Upload Paper</>}
+          </button>
 
-          {paperUrl && (
-            <div style={{ marginTop: 8 }}>
-              <label className="preview-label">Preview</label>
-              <a className="paper-link" href={paperUrl} target="_blank" rel="noopener noreferrer">Open Paper</a>
+          {uploadingType === "paper" && (
+            <div className="progress-bar">
+              <div className="progress-bar-fill" style={{ width: `${progress}%` }}></div>
             </div>
           )}
 
-          <button type="submit" className="upload-button">Upload Paper</button>
-        </form>
-
-        {/* Past papers */}
-        <div className="past-section" style={{ marginTop: 16 }}>
-          <h2 className="section-title">Past Papers</h2>
-          {pastPapers.length === 0 ? (
-            <p className="muted">No papers available.</p>
-          ) : (
-            <div className="card-grid">
-              {pastPapers.map((paper) => (
-                <div className="card" key={paper.id}>
-                  <div className="card-top">
-                    <div className="card-title">{paper.title}</div>
-                    <div className="card-time">{new Date(paper.uploadedAt).toLocaleString()}</div>
-                  </div>
-
-                  <div style={{ marginTop: 8 }}>{paper.description}</div>
-
-                  <a className="paper-link" href={paper.url} target="_blank" rel="noopener noreferrer">View Paper</a>
-
-                  <div className="card-actions">
-                    <button className="link-button" onClick={() => window.open(paper.url, '_blank')}>Open</button>
-                    <a className="link-button" href={paper.url} download>Download</a>
-                    <button className="delete-button" onClick={() => deletePaper(paper.id)}>Delete</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+          <div className="uploaded-list">
+            {pastPapers.map((p, i) => (
+              <div className="uploaded-item" key={i}>
+                <a href={p.url} target="_blank" rel="noreferrer">📄 {p.title}</a>
+                <button
+                  className="delete-btn"
+                  onClick={async () => {
+                    if (window.confirm("Delete this paper?")) {
+                      try {
+                        await fetch(`${API_BASE}/${tutorId}/papers/${p.id}`, { method: "DELETE" });
+                        fetchPapers();
+                      } catch (err) {
+                        console.log("Failed to delete paper", err);
+                      }
+                    }
+                  }}
+                >
+                  Delete
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   );
 }
-
