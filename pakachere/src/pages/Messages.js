@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 
-const BASE_URL = "https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev/api"; // Your backend URL
+const BASE_URL = "https://tutorbackend-tr3q.onrender.com/api"; // Your backend URL
 
 const Messages = ({ tutorId }) => {
   const [messages, setMessages] = useState([]);

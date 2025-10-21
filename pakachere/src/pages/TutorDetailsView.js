@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
 
-const BASE_URL = "https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev/api/tutors";
+const BASE_URL = "https://tutorbackend-tr3q.onrender.com/api/tutors";
 
 const TutorDetailsView = () => {
   const { userId } = useParams();

@@ -5,7 +5,7 @@ import axios from "axios";
 import "./pages.css";
 
 const BACKEND_URL =
-  "https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev/api/tutors";
+  "https://tutorbackend-tr3q.onrender.com/api/tutors";
 
 export default function TutorProfile() {
   const { tutorId } = useParams();

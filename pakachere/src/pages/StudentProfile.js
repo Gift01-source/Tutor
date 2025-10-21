@@ -15,7 +15,7 @@ function StudentProfile() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const baseUrl = "https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev/api/students";
+  const baseUrl = "https://tutorbackend-tr3q.onrender.com/api/students";
 
   useEffect(() => {
     const email = localStorage.getItem("email");

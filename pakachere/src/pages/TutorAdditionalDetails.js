@@ -62,7 +62,7 @@ function TutorDetails() {
       }
 
       const res = await fetch(
-        'https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev/api/tutors/details',
+        'https://tutorbackend-tr3q.onrender.com/api/tutors/details',
         {
           method: 'POST',
           body: formPayload,

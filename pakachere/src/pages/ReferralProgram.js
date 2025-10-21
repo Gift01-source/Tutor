@@ -22,7 +22,7 @@ function ReferralProgram() {
   const [scannedLink, setScannedLink] = useState('');
 
   const referralLink = `${window.location.origin}/register?ref=${encodeURIComponent(userId)}`;
-  const API_URL = 'https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev/api/referrals'; // Update your backend URL
+  const API_URL = 'https://tutorbackend-tr3q.onrender.com/api/referrals'; // Update your backend URL
 
   // Fetch referrals from backend
   const fetchReferrals = async () => {

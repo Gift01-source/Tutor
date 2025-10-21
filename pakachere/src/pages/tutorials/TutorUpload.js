@@ -22,7 +22,7 @@ export default function TutorUpload() {
   const [pastPapers, setPastPapers] = useState([]);
 
   const API_BASE =
-    "https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev/api/tutors";
+    "https://tutorbackend-tr3q.onrender.com/api/tutors";
 
   const showMsg = (msg) => {
     setMessage(msg);

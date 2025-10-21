@@ -8,7 +8,7 @@ function ResetPassword() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
-  const API_URL = 'https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev/api/reset';
+  const API_URL = 'https://tutorbackend-tr3q.onrender.com/api/reset';
 
   const handleSubmit = async (e) => {
     e.preventDefault();

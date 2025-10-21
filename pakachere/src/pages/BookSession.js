@@ -4,7 +4,7 @@ import ApprovedSessionActions from '../components/ApprovedSessionActions';
 import { format } from 'date-fns';
 import { FaStar } from 'react-icons/fa';
 
-const BASE_URL = 'https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev/api/sessions'; // your backend URL
+const BASE_URL = 'https://tutorbackend-tr3q.onrender.com/api/sessions'; // your backend URL
 
 function BookSession() {
   const studentName = 'Student'; // Replace with logged-in student info

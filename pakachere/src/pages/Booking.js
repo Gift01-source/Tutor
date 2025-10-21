@@ -5,7 +5,7 @@ import { format } from 'date-fns';
 import { FaStar } from 'react-icons/fa';
 import LiveVideoSession from './video'; // Import the live video component
 
-const BASE_URL = 'https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev';
+const BASE_URL = 'https://tutorbackend-tr3q.onrender.com';
 
 function Book() {
   const today = format(new Date(), 'yyyy-MM-dd');

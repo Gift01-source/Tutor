@@ -4,7 +4,7 @@ import axios from "axios";
 import Navbar from "../components/Navbar";
 import SessionActions from "../components/ApprovedSessionActions";
 
-const BASE_URL = "https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev";
+const BASE_URL = "https://tutorbackend-tr3q.onrender.com";
 
 export default function TutorSessions() {
   const [sessions, setSessions] = useState([]);

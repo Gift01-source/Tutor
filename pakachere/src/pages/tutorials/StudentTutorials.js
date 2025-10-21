@@ -16,7 +16,7 @@ export default function StudentTutorials() {
   const [activeVideo, setActiveVideo] = useState(null);
   const debounceRef = useRef(null);
 
-  const API_BASE = 'https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev/api/tutors';
+  const API_BASE = 'https://tutorbackend-tr3q.onrender.com/api/tutors';
 
   // Fetch all videos and papers
   useEffect(() => {

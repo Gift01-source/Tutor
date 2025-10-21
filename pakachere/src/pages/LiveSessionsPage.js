@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const SOCKET_URL = "https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev";
+const SOCKET_URL = "https://tutorbackend-tr3q.onrender.com";
 
 export default function LiveSessionsPage({ role, tutorId }) {
   const navigate = useNavigate();

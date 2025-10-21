@@ -9,7 +9,7 @@ const TutorSearch = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const BASE_URL = "https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev";
+  const BASE_URL = "https://tutorbackend-tr3q.onrender.com";
 
   useEffect(() => {
     const fetchTutors = async () => {

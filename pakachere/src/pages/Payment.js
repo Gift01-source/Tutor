@@ -44,7 +44,7 @@ function Payment() {
     };
 
     try {
-      const res = await fetch("https://supreme-train-pjpvw497vvqqf7559-5000.app.github.dev/api/payments", {
+      const res = await fetch("https://tutorbackend-tr3q.onrender.com/api/payments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)

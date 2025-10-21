@@ -33,7 +33,7 @@ def request_reset():
     reset_tokens[token] = {'email': email, 'expires_at': expires_at}
 
     # Construct reset link (frontend URL)
-    reset_link = f"https://supreme-train-pjpvw497vvqqf7559-3000.app.github.dev/reset-password/{token}"
+    reset_link = f"https://pakachere.onrender.com/reset-password/{token}"
 
     # Send email
     try:

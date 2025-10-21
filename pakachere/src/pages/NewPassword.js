@@ -11,7 +11,7 @@ function NewPassword() {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
-  const API_URL = 'http://localhost:5000/api/reset';
+  const API_URL = 'https://tutorbackend-tr3q.onrender.com/api/reset';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
