@@ -14,7 +14,7 @@ function Login() {
 
     try {
       const res = await fetch(
-        "https://tutorbackend-tr3q.onrender.comv/api/auth/login",
+        "https://tutorbackend-tr3q.onrender.com/api/auth/login",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -99,3 +99,4 @@ function Login() {
 }
 
 export default Login;
+
