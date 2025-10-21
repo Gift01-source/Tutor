@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
-from db import load_users, save_users
-from routes.tutors import load_tutors
+from .db import load_users, save_users
+from .routes.tutors import load_tutors
 
 import bcrypt
 import uuid

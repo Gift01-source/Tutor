@@ -3,9 +3,9 @@ import json
 import uuid
 from datetime import datetime
 import os
-from db import load_users
-from config import Config
-from models import db, TutorVideo, TutorPaper
+from .db import load_users
+from api.config import Config
+from api.models import db, TutorVideo, TutorPaper
 
 tutors_bp = Blueprint("tutors", __name__, url_prefix="/api/tutors")
 
