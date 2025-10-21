@@ -1,34 +1,27 @@
-# Core Flask framework
-Flask==3.0.3
-Flask-Cors==4.0.1
-Flask-SQLAlchemy==3.1.1
-Flask-Migrate==4.0.7
+# ---- Core Flask framework ----
+Flask
+Flask-Cors
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-Bcrypt
+Flask-JWT-Extended
+Flask-Mail
+Flask-SocketIO
+python-socketio
+eventlet
+Werkzeug
 
-# Authentication & security
-Flask-Bcrypt==1.0.1
-Flask-JWT-Extended==4.6.0
+# ---- File/image/video handling ----
+moviepy
+Pillow
 
-# File handling & uploads
-Werkzeug==3.0.4
+# ---- Database / utilities ----
+SQLAlchemy
+requests
+python-dotenv
 
-# Real-time communication (for video / chat / sockets)
-Flask-SocketIO==5.3.6
-python-socketio==5.11.3
-eventlet==0.36.1
+# ---- WSGI server ----
+gunicorn
 
-# Image / video processing (optional but useful)
-moviepy==1.0.3
-Pillow==10.4.0
-
-Flask-Mail==0.9.1
-
-
-# Database (SQLite or others)
-SQLAlchemy==2.0.36
-
-# Utilities
-requests==2.32.3
-python-dotenv==1.0.1
-
-# Production server
-gunicorn==21.2.0
+# ---- Optional: if you need torch ----
+torch
