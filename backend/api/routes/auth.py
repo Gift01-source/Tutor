@@ -1,11 +1,6 @@
 from flask import Blueprint, request, jsonify
-
-# ✅ Replace with SQLAlchemy imports
-#from api.models.user_model import User
-#from api import db
-
 from api.db import load_users, save_users
-from api.routes.tutors import load_tutors
+from .tutors import load_tutors
 
 import bcrypt
 import uuid
