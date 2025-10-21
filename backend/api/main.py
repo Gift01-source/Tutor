@@ -2,8 +2,8 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 from flask_socketio import SocketIO
 from .routes.video import video_bp, init_socketio
-from config import Config
-from models import db  # SQLAlchemy instance
+from .config import Config
+from .models import db  # SQLAlchemy instance
 from flask_mail import Mail
 
 from .routes.auth import auth_bp
