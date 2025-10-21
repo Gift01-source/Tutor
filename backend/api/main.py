@@ -6,6 +6,7 @@ from .config import Config
 from .models import db  # SQLAlchemy instance
 from flask_mail import Mail
 from dotenv import load_dotenv
+import os
 
 from .routes.auth import auth_bp
 from .routes.student import students_bp
