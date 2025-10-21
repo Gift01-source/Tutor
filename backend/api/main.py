@@ -5,6 +5,7 @@ from .routes.video import video_bp, init_socketio
 from .config import Config
 from .models import db  # SQLAlchemy instance
 from flask_mail import Mail
+from dotenv import load_dotenv
 
 from .routes.auth import auth_bp
 from .routes.student import students_bp
