@@ -5,7 +5,7 @@ from flask import Blueprint, request, jsonify
 #from api import db
 
 from api.db import load_users, save_users
-from .routes.tutors import load_tutors
+from api.routes.tutors import load_tutors
 
 import bcrypt
 import uuid
