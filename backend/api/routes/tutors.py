@@ -3,7 +3,7 @@ import json
 import uuid
 from datetime import datetime
 import os
-from .db import load_users
+from api.db import load_users
 from api.config import Config
 from api.models import db, TutorVideo, TutorPaper
 

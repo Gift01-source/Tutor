@@ -1,5 +1,10 @@
 from flask import Blueprint, request, jsonify
-from .db import load_users, save_users
+
+# ✅ Replace with SQLAlchemy imports
+#from api.models.user_model import User
+#from api import db
+
+from api.db import load_users, save_users
 from .routes.tutors import load_tutors
 
 import bcrypt
