@@ -1,54 +1,5 @@
 [
   {
-    "id": "db4b6c97-c3a3-4a82-ba96-9ff64b9066a3",
-    "fullName": "Gift chimwaza",
-    "email": "bae-gchim@poly.ac.mw",
-    "password": "$2b$12$aEOrmkr/7PPioeCiNbA74.Su99SW7.43WzNAGDN8rHe5cEw6vwXA2",
-    "role": "tutor"
-  },
-  {
-    "id": "5e41b162-5764-4880-acb7-ec7d0b116977",
-    "fullName": "Henry chimwaza",
-    "email": "ba-gchim@poly.ac.mw",
-    "password": "$2b$12$cg5zyBl7vr1mLAXgoWrhde7xaUIRLgbIZ/T9iRpBItMzs1yUQPCE.",
-    "role": "student"
-  },
-  {
-    "id": "7bf966e4-270b-4e28-ba4a-006e9ce9b484",
-    "fullName": "gift",
-    "email": "b-gchim@poly.ac.mw",
-    "password": "$2b$12$ywsfgYyn62OQkeQUbWvTjeQ0V6pr8LODs8Of998o7yCLFdTRmcq8i",
-    "role": "tutor"
-  },
-  {
-    "id": "589271ba-005c-4055-8311-ede87801968f",
-    "fullName": "mphatsso",
-    "email": "bae23-gchimwaza@polyac.mw",
-    "password": "$2b$12$jYGvATkTFN7KbZwuRh75ieVB2vL.O/KWahVlk8uvvlzfIPMDZXkZe",
-    "role": "tutor"
-  },
-  {
-    "id": "432730d4-89b1-4b68-a333-8ee26a384af1",
-    "fullName": "mphatsso",
-    "email": "bae3-gchimwaza@polyac.mw",
-    "password": "$2b$12$pgfqRlnrLkfheIvXMkkepOdsoqjIVt/xxTp4NBTq90n.yAp1sssqa",
-    "role": "tutor"
-  },
-  {
-    "id": "dc9113ae-2c43-44e8-8e98-d2faaed3a935",
-    "fullName": "gift",
-    "email": "bae2-gchimwaza@polyac.mw",
-    "password": "$2b$12$7OZOCSYMYRWaeFojS7RxzepEGaPzcmKWEgXvmlGtmD.2EY2MeS/Zm",
-    "role": "student"
-  },
-  {
-    "id": "506aa145-7d03-48cd-8150-41d05a68fc13",
-    "fullName": "Gift chimwaza",
-    "email": "bae22-gchimwaza@polyac.mw",
-    "password": "$2b$12$cfsSXXtrqCp6A4TPJCsvnOEKkQxIVSWWIbmi4grJbMSM23azFnJWO",
-    "role": "student"
-  },
-  {
     "id": "661bcfe6-42b8-4866-9bad-678e40343f69",
     "fullName": "Gift chimwaza",
     "email": "bae222-gchimwaza@polyac.mw",
