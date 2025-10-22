@@ -1,26 +1,5 @@
 [
     {
-        "id": "7bad3827-797b-49ac-a71a-2cdb8830bca3",
-        "tutor_id": "undefined",
-        "sender": "You",
-        "message": "yes mam",
-        "timestamp": "2025-10-20T23:02:51.250065"
-    },
-    {
-        "id": "8a8b92db-b750-4ea8-a846-4281536ded97",
-        "tutor_id": "undefined",
-        "sender": "You",
-        "message": "how are uou",
-        "timestamp": "2025-10-20T23:03:20.825959"
-    },
-    {
-        "id": "a50a9f0a-eb5f-46b6-a83a-542f19000fae",
-        "tutor_id": "undefined",
-        "sender": "You",
-        "message": "hy",
-        "timestamp": "2025-10-20T23:14:39.105974"
-    },
-    {
         "id": "7e3fdb3a-b37e-4ae7-a82c-b4c208a2ff28",
         "tutor_id": "undefined",
         "sender": "You",
