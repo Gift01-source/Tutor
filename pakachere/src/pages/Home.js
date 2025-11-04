@@ -1,8 +1,9 @@
-import React from 'react';
+
+import React, { useEffect } from 'react';
 import teacherImg from '../assets/1.jpg';
 import { Link } from 'react-router-dom';
-import './pages.css';
-
+import './pages.css'
+import AdComponent from './AdComponent'; // Import the AdComponent
 
 
 function Home() {
@@ -71,6 +72,10 @@ function Home() {
           />
         </div>
       </section>
+       {/* Ad Section */}
+      <section className="ad-section">
+        <AdComponent />
+      </section>
 
       {/* Teachers Section */}
       <section className="teachers-section">
@@ -131,3 +136,4 @@ const TeacherCard = ({ image, name, subject, bio }) => (
 );
 
 export default Home;
+
