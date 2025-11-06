@@ -1,8 +1,9 @@
+// src/pages/Home.js
 import React from 'react';
-import teacherImg from '../assets/1.jpg';
 import { Link } from 'react-router-dom';
+import teacherImg from '../assets/1.jpg';
+import AdComponent from './AdComponent';
 import './pages.css';
-import AdComponent from './AdComponent'; // Import the AdComponent
 
 function Home() {
   return (
@@ -12,10 +13,11 @@ function Home() {
         className="hero-section"
         style={{
           position: 'relative',
-          backgroundImage: `url('https://images.unsplash.com/photo-1584697964154-0d94d3f3a940?auto=format&fit=crop&w=1600&q=80')`,
+          backgroundImage:
+            "url('https://images.unsplash.com/photo-1584697964154-0d94d3f3a940?auto=format&fit=crop&w=1600&q=80')",
           backgroundSize: 'cover',
           backgroundPosition: 'center',
-          padding: '80px 0'
+          padding: '60px 20px',
         }}
       >
         <div
@@ -26,7 +28,7 @@ function Home() {
             width: '100%',
             height: '100%',
             background: 'rgba(255, 255, 255, 0.9)',
-            zIndex: 1
+            zIndex: 1,
           }}
         ></div>
 
@@ -39,20 +41,30 @@ function Home() {
             borderRadius: '18px',
             boxShadow: '0 2px 12px rgba(37,99,235,0.10)',
             padding: '32px 24px',
-            maxWidth: '420px',
+            maxWidth: '400px',
             margin: '0 auto',
-            textAlign: 'center'
+            textAlign: 'center',
           }}
         >
           <h1
             className="hero-title"
-            style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '1rem', color: '#2563eb' }}
+            style={{
+              fontSize: '2.5rem',
+              fontWeight: 'bold',
+              marginBottom: '1rem',
+              color: '#2563eb',
+            }}
           >
             Welcome to MyTeacher App
           </h1>
           <p
             className="hero-subtitle"
-            style={{ marginBottom: '2.5rem', color: '#2563eb', fontWeight: 'bold', fontSize: '1.3rem' }}
+            style={{
+              marginBottom: '2.5rem',
+              color: '#2563eb',
+              fontWeight: 'bold',
+              fontSize: '1.3rem',
+            }}
           >
             Find the perfect tutor or become one — in just a few clicks.
           </p>
@@ -66,9 +78,9 @@ function Home() {
                 borderRadius: '32px',
                 background: '#2563eb',
                 color: '#fff',
-                boxShadow: '0 4px 24px rgba(37,99,235,0.18)',
                 border: 'none',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                boxShadow: '0 4px 24px rgba(37,99,235,0.18)',
               }}
             >
               Get Started
@@ -77,26 +89,12 @@ function Home() {
         </div>
       </section>
 
-      {/* About Section (important for AdSense approval) */}
-      <section
-        className="about-section"
-        style={{ padding: '50px 20px', background: '#fff', color: '#333', textAlign: 'center' }}
-      >
-        <h2 style={{ color: '#1f1a50', fontSize: '1.8rem', marginBottom: '1rem' }}>About MyTeacher App</h2>
-        <p style={{ maxWidth: '800px', margin: '0 auto', fontSize: '1rem', lineHeight: '1.6' }}>
-          MyTeacher App is an online tutoring platform designed to connect students with qualified tutors in
-          Malawi and beyond. We help learners succeed in subjects like Mathematics, Physics, Chemistry, and
-          Biology through engaging one-on-one sessions. Our mission is to make learning more accessible,
-          personalized, and effective for every student, everywhere.
-        </p>
-      </section>
-
       {/* Features Section */}
-      <section className="features-section" style={{ padding: '60px 20px' }}>
-        <h2 className="section-title" style={{ textAlign: 'center', marginBottom: '40px', color: '#1f1a50' }}>
+      <section className="features-section" style={{ padding: '60px 20px', textAlign: 'center' }}>
+        <h2 className="section-title" style={{ color: '#1f1a50', marginBottom: '40px' }}>
           Why Choose Us?
         </h2>
-        <div className="features-list">
+        <div className="features-list" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '30px' }}>
           <FeatureCard
             image="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
             title="Qualified Tutors"
@@ -116,23 +114,23 @@ function Home() {
       </section>
 
       {/* How It Works Section */}
-      <section className="how-section" style={{ background: '#f0f4ff', padding: '60px 20px' }}>
-        <h2 className="section-title" style={{ textAlign: 'center', marginBottom: '40px', color: '#1f1a50' }}>
+      <section className="how-section" style={{ background: '#eef2ff', padding: '60px 20px', textAlign: 'center' }}>
+        <h2 className="section-title" style={{ color: '#1f1a50', marginBottom: '40px' }}>
           How It Works
         </h2>
-        <div className="steps-list">
+        <div className="steps-list" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '30px' }}>
           <StepCard
             image="https://images.unsplash.com/photo-1611974789857-9c7d53c74f88?auto=format&fit=crop&w=600&q=80"
             title="1. Sign Up"
             description="Create your free account as a student or tutor."
           />
           <StepCard
-            image="https://images.unsplash.com/photo-1611974789857-9c7d53c74f88?auto=format&fit=crop&w=600&q=80"
+            image="https://images.unsplash.com/photo-1581093448793-25b9b1ed1573?auto=format&fit=crop&w=600&q=80"
             title="2. Match & Book"
             description="Get matched with tutors and book sessions instantly."
           />
           <StepCard
-            image="https://images.unsplash.com/photo-1581093448793-25b9b1ed1573?auto=format&fit=crop&w=600&q=80"
+            image="https://images.unsplash.com/photo-1557426272-fc759fdf7a8d?auto=format&fit=crop&w=600&q=80"
             title="3. Start Learning"
             description="Join your session and learn with ease online."
           />
@@ -145,11 +143,11 @@ function Home() {
       </section>
 
       {/* Teachers Section */}
-      <section className="teachers-section" style={{ padding: '60px 20px' }}>
-        <h2 className="section-title" style={{ textAlign: 'center', marginBottom: '40px', color: '#1f1a50' }}>
+      <section className="teachers-section" style={{ padding: '60px 20px', textAlign: 'center' }}>
+        <h2 className="section-title" style={{ color: '#1f1a50', marginBottom: '40px' }}>
           Meet Our Teachers
         </h2>
-        <div className="teachers-list">
+        <div className="teachers-list" style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '30px' }}>
           <TeacherCard
             image={teacherImg}
             name="Mr. Gift Chimwaza"
@@ -172,37 +170,34 @@ function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="footer" style={{ textAlign: 'center', padding: '20px', background: '#1f1a50', color: '#fff' }}>
+      <footer className="footer" style={{ background: '#1f1a50', color: '#fff', textAlign: 'center', padding: '20px 0' }}>
         © {new Date().getFullYear()} MyTeacher App. All rights reserved.
       </footer>
     </div>
   );
 }
 
-// Feature card
 const FeatureCard = ({ image, title, description }) => (
-  <div className="feature-card" style={{ textAlign: 'center', padding: '20px' }}>
-    <img src={image} alt={title} className="feature-photo" style={{ width: '80px', height: '80px', marginBottom: '12px' }} />
-    <h3 className="feature-title" style={{ color: '#2563eb', marginBottom: '8px' }}>{title}</h3>
+  <div className="feature-card" style={{ width: '280px', background: '#fff', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', padding: '20px' }}>
+    <img src={image} alt={title} className="feature-photo" style={{ width: '60px', marginBottom: '15px' }} />
+    <h3 className="feature-title" style={{ color: '#2563eb', fontSize: '1.2rem' }}>{title}</h3>
     <p className="feature-desc" style={{ color: '#555' }}>{description}</p>
   </div>
 );
 
-// Step card
 const StepCard = ({ image, title, description }) => (
-  <div className="step-card" style={{ textAlign: 'center', padding: '20px' }}>
-    <img src={image} alt={title} className="step-photo" style={{ width: '100%', borderRadius: '12px', marginBottom: '10px' }} />
-    <h4 className="step-title" style={{ color: '#2563eb', marginBottom: '8px' }}>{title}</h4>
+  <div className="step-card" style={{ width: '280px', background: '#fff', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', padding: '20px' }}>
+    <img src={image} alt={title} className="step-photo" style={{ width: '100%', borderRadius: '12px', marginBottom: '15px' }} />
+    <h4 className="step-title" style={{ color: '#2563eb', fontSize: '1.1rem' }}>{title}</h4>
     <p className="step-desc" style={{ color: '#555' }}>{description}</p>
   </div>
 );
 
-// Teacher card
 const TeacherCard = ({ image, name, subject, bio }) => (
-  <div className="teacher-card" style={{ textAlign: 'center', padding: '20px' }}>
-    <img src={image} alt={name} className="teacher-photo" style={{ width: '140px', height: '140px', borderRadius: '50%', marginBottom: '12px' }} />
-    <h3 className="teacher-name" style={{ color: '#2563eb', marginBottom: '4px' }}>{name}</h3>
-    <p className="teacher-subject" style={{ color: '#1f1a50', fontWeight: 'bold', marginBottom: '8px' }}>{subject}</p>
+  <div className="teacher-card" style={{ width: '280px', background: '#fff', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.05)', padding: '20px' }}>
+    <img src={image} alt={name} className="teacher-photo" style={{ width: '100%', borderRadius: '12px', marginBottom: '15px' }} />
+    <h3 className="teacher-name" style={{ color: '#2563eb' }}>{name}</h3>
+    <p className="teacher-subject" style={{ color: '#1f1a50', fontWeight: 'bold' }}>{subject}</p>
     <p className="teacher-bio" style={{ color: '#555' }}>{bio}</p>
   </div>
 );
